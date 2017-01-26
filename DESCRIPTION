@@ -1,8 +1,8 @@
-Package: cross.auto.fun
-Title: What the Package Does (one line, title case)
+Package: Cross_Auto_Functions
+Title: Analysing data across sites or time
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Authors@R: person("Georgia", "Miskell", email = "georgia.miskell@gmail.com", role = c("aut", "cre"))
+Description: across and backwards analysis of data using 'auto' (site held constant) or 'cross' (time held constant) through a selection of empirical tests
 Depends:
     R (>= 3.3.1)
 License: What license is it under?
