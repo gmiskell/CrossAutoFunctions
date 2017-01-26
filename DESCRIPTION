@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Authors@R: person("Georgia", "Miskell", email = "georgia.miskell@gmail.com", role = c("aut", "cre"))
 Description: Across and backwards analysis of data using 'auto' (site held constant) or 'cross' (time held constant) through a selection of empirical tests
 Depends:
-    R (>= 3.3.1)
+R (>= 3.3.1)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
