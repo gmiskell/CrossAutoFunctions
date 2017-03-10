@@ -1,6 +1,6 @@
-#' A daily ranked variance function
+#' A daily cluster function
 #'
-#' This function gives the daily ranked variance for an observation, relative to a pool of other observations.
+#' This function gives the daily hierarchical cluster for a set of observations. Require date column (as.POSIXct), site column (character), pol column (character), value column (numeric)
 #' @param reflective This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.
 #' @param plot This decides whether to plot the data. Defaults to TRUE.
 #' @param date.start This sets the start of the selected data, if reflective is true. Defaults to '2016-07-01'.
@@ -11,31 +11,14 @@
 #' @examples
 #' clusterFUN()
 
-####		rolling cluster function script
 
-# description:	this filter will compare daily clusters of locations
-#              	using hierarchical cluster methods. Options to make this run on live data
-#				or on past data (reflective) and to make tests auto (use data from one
-#				location) or cross (use data from multiple locations)
-
-# data set-up:	require - date column (as.POSIXct), site column (character), pol
-#				column (character), value column (numeric)
-
-# options:		x - data
-#				reflective =	TRUE (default), use all data within date.start and
-#								date.end span, or FALSE use data from latest day only
-#				plot = 			TRUE (default), will create plots, or FALSE will create
-#								csv file
-#				theta = 		0.3 (1-theta) to give dissimilarity threshold
-#				tau =			3 (days) to give consistency threshold
-#				date.start =	'2016-01-01 00:00:00'
-#				date.end =		'2017-01-01 00:00:00'
-
-clusterFUN <- function(x, reflective = TRUE, plot = TRUE, theta = 0.3,
-						tau = 3, ell = 5, date.start = '2016-01-01 00:00:00', date.end = '2017-01-01 00:00:00', time.zone = Sys.timezone()){
+clusterFUN <- function(x, obs, reflective = TRUE, plot = TRUE, theta = NA, tau = NA, date.start = '2016-07-01', date.end = '2016-07-10'){
   
-  # load required libraries
-  library(raster); library(stringr); library(lubridate); library(dplyr)
+  list.of.packages <- c("plyr", "raster", "stringr", "lubridate", "dplyr")
+  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+  if(length(new.packages)) install.packages(new.packages)
+ 
+  library(plyr); library(raster); library(stringr); library(lubridate); library(dplyr)
   
   # clause on type of analysis to be run
   if (reflective == TRUE){
@@ -45,35 +28,20 @@ clusterFUN <- function(x, reflective = TRUE, plot = TRUE, theta = 0.3,
     date.end = with_tz(as.POSIXct(date.end), tzone = time.zone)
 	plot.lab = 'reflective'
   } else {
-    date.start = str_c(Sys.Date()-1, ' 00:00:00')
-    date.end = str_c(Sys.Date(), ' 00:00:00')
+    date.start = str_c(Sys.Date()-1)
+    date.end = str_c(Sys.Date())
 	date.start = with_tz(as.POSIXct(date.start), tzone = time.zone)
     date.end = with_tz(as.POSIXct(date.end), tzone = time.zone)	
 	plot.lab = 'live'
   }
   
-  # clause on either auto or cross test to be run
-  if (auto == TRUE){
+  # set up data
   cast.dat <- x %>%
-    filter(date >= as.POSIXct(date.start) - days(ell), date < (date.end)) %>%
-	mutate(day = str_sub(date, end = 10)) %>%
-    group_by(site) %>%
-	filter(!is.na(pol)) 	
-	len <- as.numeric(difftime(cast.dat$date[2],cast.dat$date[1],units = 'mins'))
-	if(len == 60) len = 24
-	if(len == 1) len = 1440	
-	nn <- seq(1:ell) * len		
-	cast.dat <- setDT(all.data.melt.hr)[, paste("l", 1:ell) := shift(value, n =  nn),by = site]
-	cast.dat <- data.frame(cast.dat)
-  } else {
-  # rearrange data structure and create day variable
-  cast.dat <- x %>%  
-    filter(date >= (date.start) & date < (date.end)) %>%
-    dcast(... ~ site, value.var = 'value', median) %>%
-    mutate(day = str_sub(date, end = 10L))
-  }
-
-  # generate output using distFUN function
+    select(date, obs, site, pol) %>%
+    dcast(... ~ site + pol, median)
+  cast.dat$day <- day(cast.dat$date)	
+  
+  # generate output using distFUN
   if(plot == TRUE){ 
     # turn on pdf generator so to combine all plots
     plot.name <- str_c('cluster_plot_', plot.lab, '.pdf')

@@ -1,24 +1,26 @@
-#' A daily ranked variance function
-#'
-#' This function gives the daily ranked variance for an observation, relative to a pool of other observations.
-#' @param reflective This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.
+#' A selection of functions used within other functions in the package
+#' 
+#' A function for creating dissimilarity plots using Spearman rank correlations
 #' @param plot This decides whether to plot the data. Defaults to TRUE.
 #` @export
 #' @examples
 #' distFUN()
 
-# required functions for different tests
-
-# 1. cluster functions ----
-
-# function for creating the dissimilarity plots using Spearman rank correlations
-distFUN <- function(x, plot = TRUE) {
-    
+distFUN <- function(x, d.thresh = 0.3, plot = TRUE) {
+  
+  # install and load required functions  
+  list.of.packages <- c("stats", "stringr", "lubridate")
+  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+  if(length(new.packages)) install.packages(new.packages)
+  library(stats); library(stringr); library(lubridate)
+  
   # clauses for where columns are empty, all zeros or same number, etc.
   row.names <- colnames(x[, -c(1:2, ncol(x))])
+  
+  x$day <- day(x$date)
     
   xx <- sapply(x[, row.names], var, na.rm = T) == 0
-    xx <- data.frame(which(xx))
+  xx <- data.frame(which(xx))
     
   if(length(!is.na(xx))){
     xxx <- x[, -which(names(x) %in% rownames(xx))]
@@ -58,7 +60,7 @@ distFUN <- function(x, plot = TRUE) {
 	
   # create final output
   if(plot == TRUE){ 
-	plot(hc, xlab = str_c(x$day[1], x$pol[1]), ylab = 'dissimilarity')
+	plot(hc, xlab = str_c(x$day[1], x$type[1]), ylab = 'dissimilarity')
 	abline(a=d.thresh, b=0)
 	} else {
 	return(dist)
@@ -66,52 +68,58 @@ distFUN <- function(x, plot = TRUE) {
 	
 }
   
-#' A daily ranked variance function
-#'
-#' This function gives the daily ranked variance for an observation, relative to a pool of other observations.
-#' @param reflective This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.
+
+#' This function gives the proxy type of network median
 #' @param plot This decides whether to plot the data. Defaults to TRUE.
 #` @export
 #' @examples
 #' networkmedianFUN()
 
-# 2. ks functions ----
+networkmedianFUN <- function(x, obs, site, type){
+  
+  list.of.packages <- c("stats", "dplyr")
+  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+  if(length(new.packages)) install.packages(new.packages)
+  library(stats); library(dplyr)
 
- # proxy function - using network median as comparison dataset
-networkmedianFUN <- function(x){
-    
   # filter data to that of interest, removing empty rows
   z = x %>%
-    select(date, conc_mean, site, pol)
-
+    select(date, obs, site, type) %>%
+    na.omit()
+  
+  if(length(z[[1]]) < 2000) {
   # make comparison data
   proxy <- unlist(sapply(seq(1, nrow(z)), function(i) {
     test = z[-i,]  
-    proxy = median(test$conc_mean, na.rm = T)   
-  }))
-  
+    proxy = median(test$obs, na.rm = T)   
+  }))} else {
+    proxy = z[, median(obs, na.rm = T)]
+  }
 }
 
-#' A daily ranked variance function
-#'
-#' This function gives the daily ranked variance for an observation, relative to a pool of other observations.
-#' @param reflective This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.
+
+#' This function gives the proxy type of nearest site data
 #' @param plot This decides whether to plot the data. Defaults to TRUE.
 #` @export
 #' @examples
 #' nearestsiteFUN()
   
-  # proxy function - using nearest site as comparison dataset
-nearestsiteFUN <- function(x, meta = meta.data) {
+nearestsiteFUN <- function(x, meta, site, type) {
+
+  # install and load required packages
+  list.of.packages <- c("dplyr")
+  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+  if(length(new.packages)) install.packages(new.packages)
+  library(dplyr)
 
   # label current pol
-  pol.lab <- x$pol[1]
+  pol.lab <- x$type[1]
 	
   # find closest sites
   meta2 <- meta %>%
-    filter(pol == pol.lab) %>%
+    filter(type == pol.lab) %>%
     filter(site %in% unique(x$site)) %>%
-    select(site, pol, lat, lon)
+    select(site, type, lat, lon)
 	  
   d <- as.matrix(dist(cbind(meta2$lon, meta2$lat)))
   d <- data.frame(d)
@@ -124,34 +132,40 @@ nearestsiteFUN <- function(x, meta = meta.data) {
 
   # combine the data with appropriate proxy
   df3 <- join(x, newdata, by = 'site')
-  x$proxy <- x$conc_mean
-  x$conc_mean <- NULL
+  x$proxy <- x$obs
+  x$obs <- NULL
 	
   finaldata <- left_join(df3, x, by = c('date', 'n.site' = 'site'))
   finaldata <- finaldata %>%
-    select(site, date, pol = pol.x, conc_mean, proxy)
+    select(site, date, type = type.x, obs, proxy)
 	
 }
 
-#' A daily ranked variance function
-#'
-#' This function gives the daily ranked variance for an observation, relative to a pool of other observations.
-#' @param reflective This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.
-#' @param plot This decides whether to plot the data. Defaults to TRUE.
+
+#' This function gives the rolling KS function
+#' @param window. This defines the size of the window to sample data from 
 #` @export
 #' @examples
 #' rollingKStest()
 
- # rolling KS function
-rollingKStest <- function(z, var.one = 'proxy', var.two = 'conc_mean', window = 1440) {
+rollingKStest <- function(z, obs, proxy, window = 1440) {
+  
+  list.of.packages <- c("zoo")
+  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+  if(length(new.packages)) install.packages(new.packages)
+  library(zoo)
+
+  if(length(z[, obs] > window)){
     
-  if(length(z[, var.two] > window)){
+    z <- z %>%
+      arrange(date)
     
     # save date column
     date <- z[, 'date']
-  
+    
     # turn data into dataframe
-    y <- data.frame(z[, var.one], z[, var.two])
+    y <- z %>%
+      select(obs, proxy)
   
     # convert df into zoo classes used in R for rolling functions
     y.zoo <-zoo(y)
@@ -177,28 +191,30 @@ rollingKStest <- function(z, var.one = 'proxy', var.two = 'conc_mean', window = 
  } else {	
 	z$p.value <- NA
 	z$statistic <- NA
-	
  }
   
 }
 
-#' A daily ranked variance function
-#'
-#' This function gives the daily ranked variance for an observation, relative to a pool of other observations.
-#' @param reflective This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.
-#' @param plot This decides whether to plot the data. Defaults to TRUE.
+
+#' This function provides the KS plot.
 #` @export
 #' @examples
 #' ksplotFUN()
 
-ksplotFUN <- function(x){
+ksplotFUN <- function(x, obs, proxy, site){
   	
-  label.1min <- ks.test(x$conc_mean[x$time == '1 min'], x$proxy[x$time == '1 min'])$p.value
-  label.1hr <- ks.test(x$conc_mean[x$time == '1 hr'], x$proxy[x$time == '1 hr'])$p.value
+  list.of.packages <- c("ggplot2", "gridExtra")
+  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+  if(length(new.packages)) install.packages(new.packages)
+ 
+  library(ggplot2); library(gridExtra)
+
+  label.1min <- ks.test(x$obs[x$time == '1 min'], x$proxy[x$time == '1 min'])$p.value
+  label.1hr <- ks.test(x$obs[x$time == '1 hr'], x$proxy[x$time == '1 hr'])$p.value
     
   labels = data.frame(time = c('1 min', '1 hr'), ks = c(round(label.1min, 3), round(label.1hr, 3)))
 	
-  plotA <- ggplot(x, aes(x = conc_mean, colour = 'obs.')) + theme_bw() +
+  plotA <- ggplot(x, aes(x = obs, colour = 'obs.')) + theme_bw() +
     stat_ecdf() + stat_ecdf(aes(x = proxy, colour = 'proxy')) + facet_wrap(~ time, scales = 'free_x') + 
 	xlab("ranked concentration") + ylab("Fn(X)") + theme(legend.title = element_blank(), legend.position = 'bottom') +
 	geom_text(data = labels, aes(label = paste("KS test: ", ks), x = 5, y = 0.15, parse = T), colour = 'black')
