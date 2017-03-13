@@ -7,7 +7,7 @@
 #' @param group2 This is the column which identifies separate networks within the data.
 #' @param date.start This sets the start of the selected data. Defaults to '2016-07-01'.
 #' @param date.end This sets the end of the selected data. Defaults to one week later than `date.start`.
-#` @export
+#' @export
 #' @examples
 #' autoFUN()
 
@@ -51,7 +51,7 @@ autoFUN <- function(x, id, group1 = 3, group2, date.start = '2016-07-01', date.e
 #' @param group2 This is the column which identifies separate networks within the data.
 #' @param date.start This sets the start of the selected data. Defaults to '2016-07-01'.
 #' @param date.end This sets the end of the selected data. Defaults to one week later than `date.start`.
-#` @export
+#' @export
 #' @examples
 #' crossFUN()
 
