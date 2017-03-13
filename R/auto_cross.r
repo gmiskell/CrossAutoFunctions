@@ -55,7 +55,7 @@ autoFUN <- function(x, id, group1 = 3, group2, date.start = '2016-07-01', date.e
 #' @examples
 #' crossFUN()
 
-crossFN <- function(x, id, group2, date.start = '2016-07-01', date.end = NA){
+crossFUN <- function(x, id, group2, date.start = '2016-07-01', date.end = NA){
   
   list.of.packages <- c("reshape2", "lubridate", "dplyr")
   new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
@@ -76,5 +76,4 @@ crossFN <- function(x, id, group2, date.start = '2016-07-01', date.end = NA){
 	melt(id.vars = c('date', 'id', 'group2', 'response.value') %>%
 	rename(comparison = variable, comparison.value = value)
 	
-
 }
