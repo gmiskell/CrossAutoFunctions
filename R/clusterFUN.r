@@ -1,18 +1,23 @@
 #' A daily cluster function
 #'
-#' This function gives the daily hierarchical cluster for a set of observations. Require date column (as.POSIXct), site column (character), pol column (character), value column (numeric)
+#' This function gives the daily hierarchical cluster for a set of observations. Require date column (as.POSIXct), grouping column (character - to be defined in the `autoFUN` function), second grouping column (character - if there are two or more networks operating at once), id column (character), and a value column (numeric).
+#' @param x This is the column under observation.
+#' @param id This is the id of each set of data being compared.
+#' @param group1 This is the column where data will be partitioned upon (either site or time).
+#' @param group2 This is the column which identifies separate networks within the data.
 #' @param reflective This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.
 #' @param plot This decides whether to plot the data. Defaults to TRUE.
 #' @param date.start This sets the start of the selected data, if reflective is true. Defaults to '2016-07-01'.
 #' @param date.end This sets the end of the selected data, if reflective is true. Defaults to '2016-07-10'
 #' @param theta This sets the test threshold on whether to flag the data. Defaults to NA (no flags given).
 #' @param tau This sets the day threshold on whether to flag the data given consistent theta flags. Defaults to NA (no flags given).
+#' @param time.zone This sets the time zone to be used on the data. Default is system timezone (care to be taken if running on server).
 #` @export
 #' @examples
 #' clusterFUN()
 
 
-clusterFUN <- function(x, obs, reflective = TRUE, plot = TRUE, theta = NA, tau = NA, date.start = '2016-07-01', date.end = '2016-07-10'){
+clusterFUN <- function(x, obs, id, group1, group2, reflective = TRUE, plot = TRUE, theta = NA, tau = NA, date.start = '2016-07-01', date.end = '2016-07-10', time.zone = Sys.timezone()){
   
   list.of.packages <- c("plyr", "raster", "stringr", "lubridate", "dplyr")
   new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
@@ -37,8 +42,8 @@ clusterFUN <- function(x, obs, reflective = TRUE, plot = TRUE, theta = NA, tau =
   
   # set up data
   cast.dat <- x %>%
-    select(date, obs, site, pol) %>%
-    dcast(... ~ site + pol, median)
+    select(date, obs, group1, group2, id) %>%
+    dcast(... ~ group1 + group2 + id, median)
   cast.dat$day <- day(cast.dat$date)	
   
   # generate output using distFUN
@@ -48,44 +53,26 @@ clusterFUN <- function(x, obs, reflective = TRUE, plot = TRUE, theta = NA, tau =
     pdf(plot.name, width = 6, height = 10)
   
     # apply the function within the function
-    if(auto == TRUE) {
-	d_ply(cast.dat, .(day, site),
+	d_ply(cast.dat, .(day, id),
 					  function(x) distFUN(x, plot = TRUE))
-
-	} else {
-	d_ply(cast.dat, .(day, pol),
-                      function(x) distFUN(x, plot = TRUE))  
-    }					  
-    
-	dev.off()
+				      
 	dev.off()
 	
   } else {
-    if(auto == TRUE) {
-		clusterAuto <- cast.dat %>%
-		group_by(day, site) %>%
+		clusterA <- cast.dat %>%
+		group_by(day, id) %>%
 		do(distFUN(., plot = FALSE))
 	if(!is.na(tau)) {
-	clusterAuto <- clusterAuto %>%
-	    group_by(day, group) %>%
-		select(site, group) %>%
+	clusterA <- clusterA %>%
+	    group_by(day, id) %>%
+		select(id, theta) %>%
 		unique() %>%
 		mutate(n = n()) %>%
 		ungroup() %>%
 		mutate(alarm = ifelse(n <= 1, 1, 0)) %>%
-		group_by(site) %>%
+		group_by(id) %>%
 		mutate(filter = movingFun(alarm, n = tau, type = 'to', fun = mean)) 
 	}		
-    write.csv(clusterAuto, filename = str_c('AUTO_cluster', plot.lab, '.csv'))
-	} else {	
-	    clusterCross <- cast.dat %>%
-	    group_by(day, pol) %>%
-	    do(distFUN(., plot = FALSE))	  
-    write.csv(clusterCross, filename = str_c('CROSS_cluster_', plot.lab, '.csv'))
+    write.csv(clusterAuto, filename = str_c('cluster', plot.lab, '.csv'))
   }
 }   
-}
-  
-  
-  
-  
