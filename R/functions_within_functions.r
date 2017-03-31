@@ -1,8 +1,9 @@
 #' A selection of functions used within other functions in the package
 #' 
-#' A function for creating dissimilarity plots using Spearman rank correlations
+#' A function for creating dissimilarity plots using Spearman rank correlations.
+#' @param d.thresh This is the dissimilarity threshold (1-p).
 #' @param plot This decides whether to plot the data. Defaults to TRUE.
-#` @export
+#' @export
 #' @examples
 #' distFUN()
 
@@ -70,8 +71,11 @@ distFUN <- function(x, d.thresh = 0.3, plot = TRUE) {
   
 
 #' This function gives the proxy type of network median
+#' @param obs This is the column being examined.
+#' @param site This is the grouping variable
+#' @param type A second grouping variable
 #' @param plot This decides whether to plot the data. Defaults to TRUE.
-#` @export
+#' @export
 #' @examples
 #' networkmedianFUN()
 
@@ -99,8 +103,11 @@ networkmedianFUN <- function(x, obs, site, type){
 
 
 #' This function gives the proxy type of nearest site data
+#' @param obs This is the column being examined.
+#' @param site This is the grouping variable
+#' @param type A second grouping variable
 #' @param plot This decides whether to plot the data. Defaults to TRUE.
-#` @export
+#' @export
 #' @examples
 #' nearestsiteFUN()
   
@@ -143,8 +150,10 @@ nearestsiteFUN <- function(x, meta, site, type) {
 
 
 #' This function gives the rolling KS function
+#' @param obs This is the column being examined.
+#' @param proxy This is the comparison variable
 #' @param window. This defines the size of the window to sample data from 
-#` @export
+#' @export
 #' @examples
 #' rollingKStest()
 
@@ -164,8 +173,7 @@ rollingKStest <- function(z, obs, proxy, window = 1440) {
     date <- z[, 'date']
     
     # turn data into dataframe
-    y <- z %>%
-      select(obs, proxy)
+    y <- data.frame(z[, obs], z[,proxy])
   
     # convert df into zoo classes used in R for rolling functions
     y.zoo <-zoo(y)
@@ -197,7 +205,10 @@ rollingKStest <- function(z, obs, proxy, window = 1440) {
 
 
 #' This function provides the KS plot.
-#` @export
+#' @param obs This is the column being examined.
+#' @param proxy This is the comparison variable
+#' @param site This is the grouping factor
+#' @export
 #' @examples
 #' ksplotFUN()
 
