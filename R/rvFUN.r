@@ -73,11 +73,11 @@ rvFUN <- function(x, obs, group1, group2, reflective = TRUE, plot = TRUE, dest =
   # if else clause on whether the data are less than theta, becomes 1 if true, and 0 otherwise
   # this looks at running means and is for tau, the length of time for alarms
 	
-			x <- x[, change.thresh := ifelse(result < theta, 1, 0), by = list(group1, group2)][, alarm := movingFun(theta.thresh, n = tau, type = 'to', fun = mean, na.rm = T)] 
+			x <- x[, change.thresh := ifelse(result < theta, 1, 0), by = list(group1, group2)][, alarm := movingFun(change.thresh, n = tau, type = 'to', fun = mean, na.rm = T)] 
 			} else {   
 
   # this is similar to when theta < 0.5
-	        x <- x[, change.thresh := ifelse(result > theta, 1, 0), by = list(group1, group2)][, alarm := movingFun(theta.thresh, n = tau, type = 'to', fun = mean, na.rm = T)]
+	        x <- x[, change.thresh := ifelse(result > theta, 1, 0), by = list(group1, group2)][, alarm := movingFun(change.thresh, n = tau, type = 'to', fun = mean, na.rm = T)]
 			} 
 		} else {
 		

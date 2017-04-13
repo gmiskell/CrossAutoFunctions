@@ -12,7 +12,7 @@
 #' @param theta This sets the test threshold on whether to flag the data. Defaults to NA (no flags given).
 #' @param tau This sets the day threshold on whether to flag the data given consistent theta flags. Defaults to NA (no flags given).
 #' @param window.length This defines the length of the sampled window, defined by row number.
-#` @export
+#' @export
 #' @examples
 #' ksFUN()
 

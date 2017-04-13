@@ -14,9 +14,7 @@
 #' @param tau This sets the day threshold on whether to flag the data given consistent theta flags. Defaults to NA (no flags given).
 #' export
 #' examples
-#' require(lubridate)
-#' data(lakers)
-#' percentFUN(lakers, obs = 'x', group1 = 'period', group2 = 'team', date.start = '2008-10-28', date.end = '2009-04-14')
+#' percentFUN()
 
 percentFUN <- function(x, obs, group1, group2, reflective = TRUE, plot = TRUE, dest = getwd(), date.start = '2016-07-01', date.end = '2016-07-10', theta = 2, tau = NA){
   
@@ -100,7 +98,7 @@ percentFUN <- function(x, obs, group1, group2, reflective = TRUE, plot = TRUE, d
 				xlab("") + ylab('daily maxima'))
 		if(!is.na(theta)) { min.ts <- min.ts + geom_abline(intercept = c(-theta, theta), slope = 0); max.ts <- max.ts + geom_abline(intercept = c(-theta, theta), slope = 0)}
 	dev.off()
-    return(c(ts, min.ts, max.ts))
+    return(c(csv, min.ts, max.ts))
   } else { 
   
   # returns x as saved csv file
