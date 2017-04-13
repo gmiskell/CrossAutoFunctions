@@ -2,19 +2,18 @@
 % Please edit documentation in R/complementaryFUN.r
 \name{hcFUN}
 \alias{hcFUN}
-\title{A daily ranked variance function}
+\title{A test to check if values are too high.}
 \usage{
-hcFUN(x, value = conc_mean, high.conc.threshold = 50)
+hcFUN(x, value = value, theta = 50)
 }
 \arguments{
-\item{reflective}{This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.}
+\item{value}{This is the column of interest, with default being 'value'.}
 
-\item{plot}{This decides whether to plot the data. Defaults to TRUE.}
+\item{theta}{This is the threshold of what a 'high' value is.}
 }
 \description{
-This function gives the daily ranked variance for an observation, relative to a pool of other observations.
+This function gives binary output on whether values are over a defined threshold.
 }
 \examples{
 hcFUN()
 }
-

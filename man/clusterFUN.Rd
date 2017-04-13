@@ -2,13 +2,19 @@
 % Please edit documentation in R/clusterFUN.r
 \name{clusterFUN}
 \alias{clusterFUN}
-\title{A daily ranked variance function}
+\title{A daily cluster function}
 \usage{
-clusterFUN(x, reflective = TRUE, plot = TRUE, theta = 0.3, tau = 3,
-  ell = 5, date.start = "2016-01-01 00:00:00",
-  date.end = "2017-01-01 00:00:00", time.zone = Sys.timezone())
+clusterFUN(x, obs, id, group1, group2, reflective = TRUE, plot = TRUE,
+  theta = NA, tau = NA, date.start = "2016-07-01",
+  date.end = "2016-07-10")
 }
 \arguments{
+\item{x}{This is the column under observation.}
+
+\item{group1}{This is the column where data will be partitioned upon (either site or time).}
+
+\item{group2}{This is the column which identifies separate networks within the data.}
+
 \item{reflective}{This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.}
 
 \item{plot}{This decides whether to plot the data. Defaults to TRUE.}
@@ -22,9 +28,8 @@ clusterFUN(x, reflective = TRUE, plot = TRUE, theta = 0.3, tau = 3,
 \item{date.end}{This sets the end of the selected data, if reflective is true. Defaults to '2016-07-10'}
 }
 \description{
-This function gives the daily ranked variance for an observation, relative to a pool of other observations.
+This function gives the daily hierarchical cluster for a set of observations. Require date column (as.POSIXct), grouping column (character - to be defined in the `autoFUN` function), second grouping column (character - if there are two or more networks operating at once), id column (character), and a value column (numeric).
 }
 \examples{
 clusterFUN()
 }
-

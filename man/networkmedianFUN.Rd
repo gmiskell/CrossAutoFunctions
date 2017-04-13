@@ -2,19 +2,22 @@
 % Please edit documentation in R/functions_within_functions.r
 \name{networkmedianFUN}
 \alias{networkmedianFUN}
-\title{A daily ranked variance function}
+\title{This function gives the proxy type of network median}
 \usage{
-networkmedianFUN(x)
+networkmedianFUN(x, obs, site, type)
 }
 \arguments{
-\item{reflective}{This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.}
+\item{obs}{This is the column being examined.}
+
+\item{site}{This is the grouping variable}
+
+\item{type}{A second grouping variable}
 
 \item{plot}{This decides whether to plot the data. Defaults to TRUE.}
 }
 \description{
-This function gives the daily ranked variance for an observation, relative to a pool of other observations.
+This function gives the proxy type of network median
 }
 \examples{
 networkmedianFUN()
 }
-

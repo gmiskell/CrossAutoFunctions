@@ -2,19 +2,16 @@
 % Please edit documentation in R/complementaryFUN.r
 \name{frFUN}
 \alias{frFUN}
-\title{A daily ranked variance function}
+\title{A test to check where the flow rate is too low}
 \usage{
-frFUN(x, flow.threshold = 1.5)
+frFUN(x, theta = 1.5)
 }
 \arguments{
-\item{reflective}{This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.}
-
-\item{plot}{This decides whether to plot the data. Defaults to TRUE.}
+\item{theta}{This is the threshold of what 'low' flow is.}
 }
 \description{
-This function gives the daily ranked variance for an observation, relative to a pool of other observations.
+A test to check where the flow rate is too low
 }
 \examples{
 frFUN()
 }
-

@@ -2,19 +2,20 @@
 % Please edit documentation in R/functions_within_functions.r
 \name{rollingKStest}
 \alias{rollingKStest}
-\title{A daily ranked variance function}
+\title{This function gives the rolling KS function}
 \usage{
-rollingKStest(z, var.one = "proxy", var.two = "conc_mean", window.1 = 72)
+rollingKStest(z, obs, proxy, window = 1440)
 }
 \arguments{
-\item{reflective}{This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.}
+\item{obs}{This is the column being examined.}
 
-\item{plot}{This decides whether to plot the data. Defaults to TRUE.}
+\item{proxy}{This is the comparison variable}
+
+\item{window.}{This defines the size of the window to sample data from}
 }
 \description{
-This function gives the daily ranked variance for an observation, relative to a pool of other observations.
+This function gives the rolling KS function
 }
 \examples{
 rollingKStest()
 }
-

@@ -2,19 +2,18 @@
 % Please edit documentation in R/functions_within_functions.r
 \name{distFUN}
 \alias{distFUN}
-\title{A daily ranked variance function}
+\title{A selection of functions used within other functions in the package}
 \usage{
-distFUN(x, plot = TRUE)
+distFUN(x, d.thresh = 0.3, plot = TRUE)
 }
 \arguments{
-\item{plot}{This decides whether to plot the data. Defaults to TRUE.}
+\item{d.thresh}{This is the dissimilarity threshold (1-p).}
 
-\item{reflective}{This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.}
+\item{plot}{This decides whether to plot the data. Defaults to TRUE.}
 }
 \description{
-This function gives the daily ranked variance for an observation, relative to a pool of other observations.
+A function for creating dissimilarity plots using Spearman rank correlations.
 }
 \examples{
 distFUN()
 }
-

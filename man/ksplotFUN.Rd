@@ -2,19 +2,20 @@
 % Please edit documentation in R/functions_within_functions.r
 \name{ksplotFUN}
 \alias{ksplotFUN}
-\title{A daily ranked variance function}
+\title{This function provides the KS plot.}
 \usage{
-ksplotFUN(x)
+ksplotFUN(x, obs, proxy, site)
 }
 \arguments{
-\item{reflective}{This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.}
+\item{obs}{This is the column being examined.}
 
-\item{plot}{This decides whether to plot the data. Defaults to TRUE.}
+\item{proxy}{This is the comparison variable}
+
+\item{site}{This is the grouping factor}
 }
 \description{
-This function gives the daily ranked variance for an observation, relative to a pool of other observations.
+This function provides the KS plot.
 }
 \examples{
 ksplotFUN()
 }
-

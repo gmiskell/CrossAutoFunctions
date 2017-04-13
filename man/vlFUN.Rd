@@ -2,19 +2,16 @@
 % Please edit documentation in R/complementaryFUN.r
 \name{vlFUN}
 \alias{vlFUN}
-\title{A daily ranked variance function}
+\title{A test to see how long it has been since visits.}
 \usage{
-vlFUN(x, length.threshold = 60)
+vlFUN(x, theta = 60)
 }
 \arguments{
-\item{reflective}{This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.}
-
-\item{plot}{This decides whether to plot the data. Defaults to TRUE.}
+\item{theta}{This is the threshold of when length between site visits is 'high' (in days).}
 }
 \description{
-This function gives the daily ranked variance for an observation, relative to a pool of other observations.
+A test to see how long it has been since visits.
 }
 \examples{
 vlFUN()
 }
-
