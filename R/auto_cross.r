@@ -1,90 +1,83 @@
-#' A function to set up data ready to perform "auto" analysis
+#' A function to set up data ready to perform "auto" analysis.
 #'
 #' This function reformats the data relative to auto analysis, where site is held steady.
-#' @param x This is the column under observation.
-#' @param group1 This is the id of each set of data being compared.
+#' @param obs This is the column under observation.
+#' @param date This is the data column.
+#' @param group This is the id of each set of data being compared.
 #' @param ell This sets the length of time backwards (in days) that should be considered as the auto proxy. Defaults to 3.
-#' @param group2 This is the column which identifies separate networks within the data.
-#' @param date.start This sets the start of the selected data. Defaults to '2016-07-01'.
-#' @param date.end This sets the end of the selected data. Defaults to one week later than `date.start`.
 #' @export
 #' @examples
 #' autoFUN()
 
-autoFUN <- function(x, ell = 3, group1 = 'site', group2 = 'pol', date.start = '2016-07-01', date.end = NA){
+autoFUN <- function(x, date, obs, ell = 3, group = 'site'){
   
-  list.of.packages <- c("plyr", "raster", "stringr", "data.table", "lubridate", "dplyr")
-  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-  if(length(new.packages)) install.packages(new.packages)
+	list.of.packages <- c("plyr", "raster", "stringr", "lubridate", "dplyr", "data.table")
+	new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+	if(length(new.packages)) install.packages(new.packages)
  
-  library(plyr); library(raster); library(data.table); library(stringr); library(lubridate); library(dplyr)
+	library(plyr); library(raster); library(data.table); library(stringr); library(lubridate); library(dplyr)
   
-  date.start.ell <- as.character(as.Date(date.start) - days(ell))
-  if(is.na(date.end) == TRUE) {date.end <- as.character(as.Date(date.start) + days(7))}
-  
-  x$group1 <- x[, ...group1]; x$group2 <- x[, ...group2]
-  
-  x <- x %>%
-	  select(date, group1, group2, value) %>%
-    filter(date >= (date.start.ell), date < (date.end)) %>%
-    group_by(group1) %>%
-	  filter(!is.na(group2)) %>%
-	  arrange(date)
+	x <- as.data.table(x)
+	x$group <- x[, ..group]; x$obs <- x[, ..obs]; x$date <- x[, ..date]
+	
+	x <- x[, list(date, group, obs)]
+	x <- unique(x)
+	x <- x[order(group)]
+	
 	len <- as.numeric(difftime(x$date[2], x$date[1], units = 'mins'))
 	if(len == 60) len = 24
 	if(len == 1) len = 1440	
-	nn <- seq(1:group1) * len		
-	x <- setDT(x)[, paste("l", 1:ell) := shift(value, n =  nn, type = 'lag'), by = group1]
-	x <- data.frame(x)
 	
-  y <- x %>%
-	  rename(response.value = value) %>%
-	  group_by(date, group1) %>%
-	  melt(id.vars = c('date', 'group1', 'group2', 'response.value')) %>%
-	  rename(comparison = variable, comparison.value = value)
+	# pad out of data frame in case of missing values
+	if(len == 24) time.freq = 'hour' 
+	if(len == 1440) time.freq = 'min'
+	span <- as.POSIXct(seq(min(x$date, na.rm = T), max(x$date, na.rm = T), by = time.freq))
+	grp.n <- unique(na.omit(x$group))
+	span <- rep(span, length(grp.n))
+	grp <- rep(grp.n, each = length(span))
+	span <- data.frame(date=span, group = grp)
+	
+	x <- merge(span, x, by = c('date', 'group'), all = TRUE)
+	x <- unique(x)
   
-  y
+	nn <- seq(from = 0, to = ell) * len		
+	x <- setDT(x)[, paste("l", 0:ell) := shift(obs, n =  nn, type = 'lag'), by = group]
+
+	y <- x[, melt(x, id.vars = c('date', 'group', 'obs'))][!is.na(group)]
+	setnames(y, c('variable', 'value'), c('comparison', 'comparison.value'))
+  
+	y
 
 }
 
-#' A function to set up data ready to perform "cross" analysis
+#' A function to set up data ready to perform "cross" analysis.
 #'
-#' This function reformats the data relative to cross analysis, where time is held steady. NB: id & group1 here are the same, and so only id is included.
-#' @param x This is the column under observation.
-#' @param group1 This is the id of each set of data being compared.
-#' @param group2 This is the column which identifies separate networks within the data.
-#' @param date.start This sets the start of the selected data. Defaults to '2016-07-01'.
-#' @param date.end This sets the end of the selected data. Defaults to one week later than `date.start`.
+#' This function reformats the data relative to cross analysis, where time is held steady. 
+#' @param obs This is the column under observation.
+#' @param group This is the id of each set of data being compared.
 #' @export
 #' @examples
 #' crossFUN()
 
-crossFUN <- function(x, group1, group2, date.start = '2016-07-01', date.end = NA){
+crossFUN <- function(x, date, obs, group){
   
-  list.of.packages <- c("reshape2", "lubridate", "dplyr")
-  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-  if(length(new.packages)) install.packages(new.packages)
+	list.of.packages <- c("reshape2", "lubridate", "data.table")
+	new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+	if(length(new.packages)) install.packages(new.packages)
  
-  library(reshape2); library(lubridate); library(dplyr)
+	library(reshape2); library(lubridate); library(data.table)
   
-  if(is.na(date.end) == TRUE) {date.end <- as.character(as.Date(date.start) + days(7))}
-  
-  x$group1 <- x[, ...group1]; x$group2 <- x[, ...group2]
-  
-  x <- x %>%
-    select(date, group1, value, group2) %>%
-  	filter(date >= (date.start) & date <= (date.end))
+	x <- as.data.table(x)
+	
+	x$group <- x[, ..group]; x$obs <- x[, ..obs]; x$date <- x[, ..date]
+	
+	x <- x[, list(date, group, obs)][, date := ymd_hms(date)]
+	cast.x <- x[, dcast(x, ... ~ group, median, value.var = 'obs')]
 
-  cast.x <- dcast(x, ... ~ group1)
-  
-  y <- x %>%
-    join(cast.x, by = c('date', 'group2')) %>%
-    rename(response.value = value) %>%
-    group_by(date, group1) %>%
-    melt(id.vars = c('date', 'group1', 'group2', 'response.value')) %>%
-    rename(comparison = variable, comparison.value = value)
-  
-  y <- y[!(y$group1 == y$comparison),]
+	y <- join(x, cast.x, by = 'date')
+	y <- y[, melt(y, id.vars = c('date', 'group', 'obs'))]
+	setnames(y, c('variable', 'value'), c('comparison', 'comparison.value')) 
+	y <- y[!(y$group == y$comparison),]
 	
 	y
 	
