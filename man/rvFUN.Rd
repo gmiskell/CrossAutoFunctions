@@ -4,38 +4,29 @@
 \alias{rvFUN}
 \title{A daily ranked variance function}
 \usage{
-rvFUN(x, obs, group1, group2, reflective = TRUE, plot = TRUE,
-  dest = getwd(), date.start = "2016-07-01", date.end = "2016-07-10",
-  theta = NA, tau = NA)
+rvFUN(x, obs, group, reflective = TRUE, date.start = "2016-07-01 00:00:00",
+  date.end = "2016-07-10 00:00:00", theta = NA, tau = NA)
 }
 \arguments{
 \item{obs}{This is the numeric column under investigation.}
 
-\item{group1}{This is the first grouping value of the data, with the default being 'site'.}
-
-\item{group2}{This is the second grouping value of the data, which allows overlain networks, with the default being 'pol'.}
+\item{group}{This is the first grouping value of the data, with the default being 'site'.}
 
 \item{reflective}{This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.}
 
-\item{plot}{This decides whether to plot the data. Defaults to TRUE.}
+\item{date.start}{This sets the start of the selected data, if reflective is true. Defaults to '2016-07-01 00:00:00'.}
 
-\item{dest}{This is the destination folder where the function output will be saved. Defaults to current working directory.}
-
-\item{date.start}{This sets the start of the selected data, if reflective is true. Defaults to '2016-07-01'.}
-
-\item{date.end}{This sets the end of the selected data, if reflective is true. Defaults to '2016-07-10'}
+\item{date.end}{This sets the end of the selected data, if reflective is true. Defaults to '2016-07-10 00:00:00'.}
 
 \item{theta}{This sets the test threshold on whether to flag the data. Defaults to NA (no flags given).}
 
 \item{tau}{This sets the day threshold on whether to flag the data given consistent theta flags. Defaults to NA (no flags given).}
 
-\item{date}{This is a required column with the format 'YYYY-MM-DD'.}
+\item{date}{This is a required column with the format 'YYYY-MM-DD HH:MM:SS'.}
 }
 \description{
 This function gives the daily ranked variance for an observation, relative to a pool of other observations.
 }
 \examples{
-require(lubridate)
-data(lakers)
-rvFUN(lakers, obs = 'x', group1 = 'period', group2 = 'team', date.start = '2008-10-28', date.end = '2009-04-14')
+rvFUN()
 }

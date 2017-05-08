@@ -2,21 +2,21 @@
 % Please edit documentation in R/functions_within_functions.r
 \name{nearestsiteFUN}
 \alias{nearestsiteFUN}
-\title{This function gives the proxy type of nearest site data}
+\title{This function gives the proxy type of nearest site data.}
 \usage{
-nearestsiteFUN(x, meta, site, type)
+nearestsiteFUN(x, obs, group, lat, lon)
 }
 \arguments{
-\item{site}{This is the grouping variable}
-
-\item{type}{A second grouping variable}
-
 \item{obs}{This is the column being examined.}
 
-\item{plot}{This decides whether to plot the data. Defaults to TRUE.}
+\item{group}{This is the grouping variable.}
+
+\item{lat}{Latitude column.}
+
+\item{lon}{Longitude column.}
 }
 \description{
-This function gives the proxy type of nearest site data
+This function gives the proxy type of nearest site data.
 }
 \examples{
 nearestsiteFUN()

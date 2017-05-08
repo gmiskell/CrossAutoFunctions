@@ -2,23 +2,24 @@
 % Please edit documentation in R/ksFUN.R
 \name{ksFUN}
 \alias{ksFUN}
-\title{A rolling Kolmogorov-Smirnov (KS) two-sample test function}
+\title{A rolling Kolmogorov-Smirnov (KS) two-sample test function.}
 \usage{
-ksFUN(x, obs, site, type, reflective = TRUE, plot = TRUE,
-  proxy = "network median", date.start = "2016-07-01 00:00:00",
-  date.end = "2016-07-10 00:00:00", theta = NA, tau = NA,
-  window.length = 72)
+ksFUN(x, obs, date, proxy, reflective = TRUE,
+  date.start = "2016-07-01 00:00:00", date.end = "2016-07-10 00:00:00",
+  theta = NA, tau = NA, window.length = 72)
 }
 \arguments{
+\item{obs}{The time-series under investigation.}
+
+\item{date}{This is a required column with the format 'YYYY-MM-DD HH:MM:SS'.}
+
+\item{proxy}{The comparison column.}
+
 \item{reflective}{This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.}
 
-\item{plot}{This decides whether to plot the data. Defaults to TRUE.}
+\item{date.start}{This sets the start of the selected data, if reflective is true. Defaults to '2016-07-01 00:00:00'.}
 
-\item{proxy}{This decides what type of proxy to use as the comparison. Options are 'network median' (default), or 'nearest site'.}
-
-\item{date.start}{This sets the start of the selected data, if reflective is true. Defaults to '2016-07-01'.}
-
-\item{date.end}{This sets the end of the selected data, if reflective is true. Defaults to '2016-07-10'}
+\item{date.end}{This sets the end of the selected data, if reflective is true. Defaults to '2016-07-10 00:00:00'.}
 
 \item{theta}{This sets the test threshold on whether to flag the data. Defaults to NA (no flags given).}
 

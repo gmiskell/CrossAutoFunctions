@@ -2,23 +2,18 @@
 % Please edit documentation in R/auto_cross.r
 \name{autoFUN}
 \alias{autoFUN}
-\title{A function to set up data ready to perform "auto" analysis}
+\title{A function to set up data ready to perform "auto" analysis.}
 \usage{
-autoFUN(x, ell = 3, group1 = "site", group2 = "pol",
-  date.start = "2016-07-01", date.end = NA)
+autoFUN(x, date, obs, ell = 3, group = "site")
 }
 \arguments{
-\item{x}{This is the column under observation.}
+\item{date}{This is the data column.}
+
+\item{obs}{This is the column under observation.}
 
 \item{ell}{This sets the length of time backwards (in days) that should be considered as the auto proxy. Defaults to 3.}
 
-\item{group1}{This is the id of each set of data being compared.}
-
-\item{group2}{This is the column which identifies separate networks within the data.}
-
-\item{date.start}{This sets the start of the selected data. Defaults to '2016-07-01'.}
-
-\item{date.end}{This sets the end of the selected data. Defaults to one week later than `date.start`.}
+\item{group}{This is the id of each set of data being compared.}
 }
 \description{
 This function reformats the data relative to auto analysis, where site is held steady.

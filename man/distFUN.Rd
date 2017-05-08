@@ -4,12 +4,10 @@
 \alias{distFUN}
 \title{A selection of functions used within other functions in the package}
 \usage{
-distFUN(x, d.thresh = 0.3, plot = TRUE)
+distFUN(x, date)
 }
 \arguments{
-\item{d.thresh}{This is the dissimilarity threshold (1-p).}
-
-\item{plot}{This decides whether to plot the data. Defaults to TRUE.}
+\item{date}{Date column}
 }
 \description{
 A function for creating dissimilarity plots using Spearman rank correlations.

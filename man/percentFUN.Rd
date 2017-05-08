@@ -2,28 +2,24 @@
 % Please edit documentation in R/percentFUN.r
 \name{percentFUN}
 \alias{percentFUN}
-\title{A function for comparing the minima and maxima}
+\title{A function for comparing the daily minima and maxima.}
 \usage{
-percentFUN(x, obs, group1, group2, reflective = TRUE, plot = TRUE,
-  dest = getwd(), date.start = "2016-07-01", date.end = "2016-07-10",
+percentFUN(x, date, obs, group, reflective = TRUE,
+  date.start = "2016-07-01 00:00:00", date.end = "2016-07-10 00:00:00",
   theta = 2, tau = NA)
 }
 \arguments{
+\item{date}{This is a required column with the format 'YYYY-MM-DD HH:MM:SS'.}
+
 \item{obs}{This is the numeric column under investigation.}
 
-\item{group1}{This is the first grouping value of the data, with the default being 'site'.}
-
-\item{group2}{This is the second grouping value of the data, which allows overlain networks, with the default being 'pol'.}
+\item{group}{This is the first grouping value of the data, with the default being 'site'.}
 
 \item{reflective}{This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.}
 
-\item{plot}{This decides whether to plot the data. Defaults to TRUE.}
+\item{date.start}{This sets the start of the selected data, if reflective is true. Defaults to '2016-07-01 00:00:00'.}
 
-\item{dest}{This is the destination folder where the function output will be saved. Defaults to current working directory.}
-
-\item{date.start}{This sets the start of the selected data, if reflective is true. Defaults to '2016-07-01'.}
-
-\item{date.end}{This sets the end of the selected data, if reflective is true. Defaults to '2016-07-10'}
+\item{date.end}{This sets the end of the selected data, if reflective is true. Defaults to '2016-07-10 00:00:00'.}
 
 \item{theta}{This sets the test threshold on whether to flag the data. Defaults to 2 (similar to 2 standard deviations).}
 
@@ -31,8 +27,6 @@ percentFUN(x, obs, group1, group2, reflective = TRUE, plot = TRUE,
 export
 examples
 percentFUN()}
-
-\item{date}{This is a required column with the format 'YYYY-MM-DD'.}
 }
 \description{
 This function finds and compares the daily 'minima' (5th) and 'maxima' (95th) percentiles across groups using modified z-scores (Mean Absolute Deviation - MAD).

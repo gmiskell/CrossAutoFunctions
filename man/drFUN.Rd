@@ -2,38 +2,32 @@
 % Please edit documentation in R/drFUN.R
 \name{drFUN}
 \alias{drFUN}
-\title{A decomposed regression analysis}
+\title{A decomposed regression analysis.}
 \usage{
-drFUN(x, obs, group1, group2, reflective = TRUE, plot = TRUE,
-  dest = getwd(), date.start = "2016-07-01", date.end = "2016-07-10",
+drFUN(x, obs, date, proxy, reflective = TRUE,
+  date.start = "2016-07-01 00:00:00", date.end = "2016-07-10 00:00:00",
   long.term = 168, short.term = 24, theta = NA, tau = NA)
 }
 \arguments{
 \item{obs}{This is the numeric column under investigation.}
 
-\item{group1}{This is the first grouping value of the data, with the default being 'site'.}
+\item{date}{This is a required column with the format 'YYYY-MM-DD HH:MM:SS'.}
 
-\item{group2}{This is the second grouping value of the data, which allows overlain networks, with the default being 'pol'.}
+\item{proxy}{This is the data that obs is being compared to (cannot be the same as obs).}
 
 \item{reflective}{This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.}
 
-\item{plot}{This decides whether to plot the data. Defaults to TRUE.}
+\item{date.start}{This sets the start of the selected data, if reflective is true. Defaults to '2016-07-01 00:00:00'.}
 
-\item{dest}{This is the destination folder where the function output will be saved. Defaults to current working directory.}
+\item{date.end}{This sets the end of the selected data, if reflective is true. Defaults to '2016-07-10 00:00:00'.}
 
-\item{date.start}{This sets the start of the selected data, if reflective is true. Defaults to '2016-07-01'.}
+\item{long.term}{This sets the length of the long-term trend. Defaults to 168.}
 
-\item{date.end}{This sets the end of the selected data, if reflective is true. Defaults to '2016-07-10'.}
-
-\item{long.term}{This sets the length of the long-term trend. Defaults to 1 week.}
-
-\item{short.term}{This sets the length of the short-term trend. Defaults to 1 day.}
+\item{short.term}{This sets the length of the short-term trend. Defaults to 24.}
 
 \item{theta}{This sets the test threshold on whether to flag the data. Defaults to NA (no flags given).}
 
 \item{tau}{This sets the day threshold on whether to flag the data given consistent theta flags. Defaults to NA (no flags given).}
-
-\item{date}{This is a required column with the format 'YYYY-MM-DD'.}
 }
 \description{
 This function gives the decomposed time series with long-term (week) and short-term (day) trends removed.

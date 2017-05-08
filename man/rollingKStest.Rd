@@ -11,7 +11,7 @@ rollingKStest(z, obs, proxy, window = 1440)
 
 \item{proxy}{This is the comparison variable}
 
-\item{window.}{This defines the size of the window to sample data from}
+\item{window}{This defines the size of the window to sample data from}
 }
 \description{
 This function gives the rolling KS function

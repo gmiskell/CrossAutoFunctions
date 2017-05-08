@@ -2,33 +2,30 @@
 % Please edit documentation in R/clusterFUN.r
 \name{clusterFUN}
 \alias{clusterFUN}
-\title{A daily cluster function}
+\title{A daily cluster function.}
 \usage{
-clusterFUN(x, obs, id, group1, group2, reflective = TRUE, plot = TRUE,
-  theta = NA, tau = NA, date.start = "2016-07-01",
-  date.end = "2016-07-10")
+clusterFUN(x, date, obs, group, reflective = TRUE, theta = NA, tau = NA,
+  date.start = "2016-07-01 00:00:00", date.end = "2016-07-10 00:00:00")
 }
 \arguments{
-\item{x}{This is the column under observation.}
+\item{date}{This the date column (set up as YYYY-MM-DD HH:MM:SS).}
 
-\item{group1}{This is the column where data will be partitioned upon (either site or time).}
+\item{obs}{This is the column under observation.}
 
-\item{group2}{This is the column which identifies separate networks within the data.}
+\item{group}{This is the column where data will be partitioned upon (either site or time).}
 
 \item{reflective}{This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.}
-
-\item{plot}{This decides whether to plot the data. Defaults to TRUE.}
 
 \item{theta}{This sets the test threshold on whether to flag the data. Defaults to NA (no flags given).}
 
 \item{tau}{This sets the day threshold on whether to flag the data given consistent theta flags. Defaults to NA (no flags given).}
 
-\item{date.start}{This sets the start of the selected data, if reflective is true. Defaults to '2016-07-01'.}
+\item{date.start}{This sets the start of the selected data, if reflective is true. Defaults to '2016-07-01 00:00:00'.}
 
-\item{date.end}{This sets the end of the selected data, if reflective is true. Defaults to '2016-07-10'}
+\item{date.end}{This sets the end of the selected data, if reflective is true. Defaults to '2016-07-10 00:00:00'.}
 }
 \description{
-This function gives the daily hierarchical cluster for a set of observations. Require date column (as.POSIXct), grouping column (character - to be defined in the `autoFUN` function), second grouping column (character - if there are two or more networks operating at once), id column (character), and a value column (numeric).
+This function gives the daily hierarchical cluster for a set of observations.
 }
 \examples{
 clusterFUN()

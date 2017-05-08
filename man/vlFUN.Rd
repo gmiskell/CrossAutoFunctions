@@ -4,9 +4,13 @@
 \alias{vlFUN}
 \title{A test to see how long it has been since visits.}
 \usage{
-vlFUN(x, theta = 60)
+vlFUN(x, date, last.visit = "last.visit", theta = 60)
 }
 \arguments{
+\item{date}{This is the date column (in YYYY-MM-DD).}
+
+\item{last.visit}{This is the column of the date of last visit to the site (in YYYY-MM-DD).}
+
 \item{theta}{This is the threshold of when length between site visits is 'high' (in days).}
 }
 \description{

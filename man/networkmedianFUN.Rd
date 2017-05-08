@@ -2,21 +2,17 @@
 % Please edit documentation in R/functions_within_functions.r
 \name{networkmedianFUN}
 \alias{networkmedianFUN}
-\title{This function gives the proxy type of network median}
+\title{This function gives the proxy type of network median.}
 \usage{
-networkmedianFUN(x, obs, site, type)
+networkmedianFUN(x, group, obs)
 }
 \arguments{
+\item{group}{This is the identifying variable.}
+
 \item{obs}{This is the column being examined.}
-
-\item{site}{This is the grouping variable}
-
-\item{type}{A second grouping variable}
-
-\item{plot}{This decides whether to plot the data. Defaults to TRUE.}
 }
 \description{
-This function gives the proxy type of network median
+This function gives the proxy type of network median.
 }
 \examples{
 networkmedianFUN()

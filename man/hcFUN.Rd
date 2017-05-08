@@ -4,10 +4,10 @@
 \alias{hcFUN}
 \title{A test to check if values are too high.}
 \usage{
-hcFUN(x, value = value, theta = 50)
+hcFUN(x, obs = "value", theta = 50)
 }
 \arguments{
-\item{value}{This is the column of interest, with default being 'value'.}
+\item{obs}{This is the column of interest, with default being 'value'.}
 
 \item{theta}{This is the threshold of what a 'high' value is.}
 }

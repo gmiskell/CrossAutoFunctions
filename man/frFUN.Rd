@@ -4,9 +4,11 @@
 \alias{frFUN}
 \title{A test to check where the flow rate is too low}
 \usage{
-frFUN(x, theta = 1.5)
+frFUN(x, flow = "flow", theta = 1.5)
 }
 \arguments{
+\item{flow}{This is the flow column.}
+
 \item{theta}{This is the threshold of what 'low' flow is.}
 }
 \description{
