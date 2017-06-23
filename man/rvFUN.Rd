@@ -4,11 +4,14 @@
 \alias{rvFUN}
 \title{A daily ranked variance function}
 \usage{
-rvFUN(x, obs, group, reflective = TRUE, date.start = "2016-07-01 00:00:00",
-  date.end = "2016-07-10 00:00:00", theta = NA, tau = NA)
+rvFUN(x, obs, date, group, reflective = TRUE,
+  date.start = "2016-07-01 00:00:00", date.end = "2016-07-10 00:00:00",
+  theta = NA, tau = NA)
 }
 \arguments{
 \item{obs}{This is the numeric column under investigation.}
+
+\item{date}{This is a required column with the format 'YYYY-MM-DD HH:MM:SS'.}
 
 \item{group}{This is the first grouping value of the data, with the default being 'site'.}
 
@@ -21,8 +24,6 @@ rvFUN(x, obs, group, reflective = TRUE, date.start = "2016-07-01 00:00:00",
 \item{theta}{This sets the test threshold on whether to flag the data. Defaults to NA (no flags given).}
 
 \item{tau}{This sets the day threshold on whether to flag the data given consistent theta flags. Defaults to NA (no flags given).}
-
-\item{date}{This is a required column with the format 'YYYY-MM-DD HH:MM:SS'.}
 }
 \description{
 This function gives the daily ranked variance for an observation, relative to a pool of other observations.
