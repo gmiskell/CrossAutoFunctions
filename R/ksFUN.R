@@ -30,18 +30,17 @@ ksFUN <- function(x, obs, date, proxy, reflective = TRUE, date.start = '2016-07-
       date.end = date.end
     } else {
       
-      date.start = str_c(Sys.Date()-7, ' 00:00:00')
-      date.end = str_c(Sys.Date(), ' 00:00:00')
+      date.start = Sys.time()-60*60*24*7
+      date.end = Sys.time()
     }
     
-    date.start <- ymd_hms(date.start); date.end <- ymd_hms(date.end)
-  
+    date.interval <- interval(date.start, date.end, tzone = 'Pacific/Auckland')
+
   # define selected variables
   # use `data.table` package to deal with large datasets
     x <- as.data.table(x)
-    setDT(x)
-    x[, date := ymd_hms(date)]
-    x <- x[date >= date.start & date <= date.end]
+    x[, date := ymd_hms(date, tz = 'Pacific/Auckland')]
+    x <- x[date %within% date.interval][, date := force_tz(date, tzone = 'Pacific/Auckland')]
     x$proxy <- x[,..proxy]
     x$obs <- x[,..obs]
     
@@ -53,21 +52,30 @@ ksFUN <- function(x, obs, date, proxy, reflective = TRUE, date.start = '2016-07-
     x <- na.omit(x)
 
   # generate rolling KS test results using function by site
-    ks.x <- rollingKStest(x, obs = 'obs', proxy = 'proxy', window = window.length)
-  
+    if(length(x$obs) > window.length) {
+      ks.x <- rollingKStest(x, obs = 'obs', proxy = 'proxy', window = window.length)
+    } else {
+      ks.x <- cbind(x, p.value = rep(NA, length(x[[1]])), statistic = rep(NA, length(x[[1]])))
+    }
+    ks.x <- as.data.table(ks.x)
+    
   # use theta and tau thresholds if present
     if((!is.na(theta))) {
   
+		ks.x <- setDT(ks.x)[, warning := ifelse(p.value < theta, 1, 0)]
+		ks.x <- ks.x[, warning := ifelse(is.na(warning), 0, warning)]
+		
       if((!is.na(tau))) {
 
       # if else clause on whether the data are less than theta, becomes 1 if true, and 0 otherwise
       # this looks at running means and is for tau, the length of time for alarms
       
-        ks.x <- ks.x[, warning := ifelse(p.value < theta, 1, 0), by = list(group)][, alarm := movingFun(warning, n = tau, type = 'to', fun = mean, na.rm = T)] 
+        ks.x <- ks.x[, alarm := movingFun(warning, n = tau, type = 'to', fun = mean, na.rm = T)] 
+        ks.x <- ks.x[, alarm := ifelse(is.na(alarm), 0, alarm)]
    
       } else {
     
-        ks.x$alaram <- NA
+        ks.x$alarm <- NA
       } 
     }  else {
   
@@ -76,7 +84,7 @@ ksFUN <- function(x, obs, date, proxy, reflective = TRUE, date.start = '2016-07-
     }
 
   # gather variables of interest and return
-    ks.x <- ks.x[, list(date, obs, proxy, test = 'ks test', warning, alarm)]
+    ks.x <- ks.x[, list(date, test = 'ks test', statistic = p.value, warning, alarm)]
 
 	ks.x
 	

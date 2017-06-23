@@ -23,31 +23,29 @@ drFUN <- function(x, obs, date, proxy, reflective = TRUE, date.start = '2016-07-
 		if(length(new.packages)) install.packages(new.packages)
 		library(stats); library(stringr); library(raster); library(ggplot2); library(data.table); library(dplyr)
 		
-	# clause on type of analysis to be run, define dates
-	  if (reflective == TRUE) {
-	
-	  	date.start = date.start 
-	  	date.end = date.end
-	  } else {
-	
-	  	date.start = str_c(Sys.Date()-7, ' 00:00:00')
-	  	date.end = str_c(Sys.Date(), ' 00:00:00')
-	  }
-	
-		date.start <- ymd_hms(date.start); date.end <- ymd_hms(date.end)
-	
-			
-	# define selected variables
-	# use data.table package to deal with large datasets
+		# clause on type of analysis to be run
+		if (reflective == TRUE) {
+		  
+		  date.start = date.start 
+		  date.end = date.end
+		} else {
+		  
+		  date.start = Sys.time()-60*60*24*7
+		  date.end = Sys.time()
+		}
+		
+		date.interval <- interval(date.start, date.end, tzone = 'Pacific/Auckland')
+
+		# define selected variables
+		# use `data.table` package to deal with large datasets
 		x <- as.data.table(x)
-		setDT(x)
-		x[, date := as.Date(date)]
-		x <- x[date >= date.start & date <= date.end]
-		x$obs <- x[,..obs]
+		x[, date := ymd_hms(date, tz = 'Pacific/Auckland')]
+		x <- x[date %within% date.interval][, date := force_tz(date, tzone = 'Pacific/Auckland')]
 		x$proxy <- x[,..proxy]
+		x$obs <- x[,..obs]
 	
 		# check length of data
-		if(length(x$obs > long.term)){	
+		if(length(na.exclude(x$obs)) > 0.8*long.term){	
 		
 	# training data - select first [long.term] length of data using the proxy data
 		z.train <- head(x, n = long.term)
@@ -131,11 +129,10 @@ drFUN <- function(x, obs, date, proxy, reflective = TRUE, date.start = '2016-07-
 	  }
 
 	# gather variables of interest and return
-		XY.data <- XY.data[, list(date, obs, proxy, test = 'decomposed regression', iX, iY, xy.diff, warning, alarm)]
+		XY.data <- XY.data[, list(date, test = 'decomposed regression', statistic = xy.diff, warning, alarm)]
 		} else {
 		  
-		  XY.data <- x[, list(date, obs, proxy, test = 'decompose regression')]
-		  XY.data$iX <- NA; XY.data$iY <- NA; XY.data$warning <- NA; XY.data$alarm <- NA
+		  XY.data <- x[, list(date, test = 'decompose regression', statistic = NA, warning = NA, alarm = NA)]
 		  }
 
 	return(XY.data)

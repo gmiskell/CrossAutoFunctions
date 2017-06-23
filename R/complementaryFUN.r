@@ -14,9 +14,11 @@ hcFUN <- function(x, obs = 'value', theta = 50){
   if(length(new.packages)) install.packages(new.packages)
   library(data.table)
   
-  x <- setDT(x)
+  x <- as.data.table(x)
   x$obs <- x[,..obs]
-  x[, test := 'high concentration', filter := ifelse(obs > theta, 1, 0)]
+  x <- x[, test := 'high concentration'][, alarm := ifelse(obs > theta, 1, 0)]
+  
+  x <- x[, list(date, test, alarm)]
   
 }
 
@@ -35,10 +37,12 @@ frFUN <- function(x, flow = 'flow', theta = 1.5){
   if(length(new.packages)) install.packages(new.packages)
   library(data.table)
   
-  setDT(x)
+  x <- as.data.table(x)
   x$flow <- x[,..flow]
-  x <- x[, filter := ifelse(flow < theta | is.na(flow), 1, 0), test := 'flow']
+  x <- x[, alarm := ifelse(flow < theta | is.na(flow), 1, 0)][, test := 'flow']
  
+  x <- x[, list(date, test, alarm)]
+  
 }
 
 #' A test to see how long it has been since visits.
@@ -57,8 +61,10 @@ vlFUN <- function(x, date, last.visit = 'last.visit', theta = 60){
   if(length(new.packages)) install.packages(new.packages)
   library(lubridate); library(dplyr)
 	
-  setDT(x)
+  x <- as.data.table(x)
   x$date <- x[,..date]; x$last.visit <- x[,..last.visit]
-  x <- x[, test := 'last visit', filter := ifelse(difftime(date, last.visit, unit = 'days') > theta, 1, 0)]
+  x <- x[, test := 'last visit'][, alarm := ifelse(difftime(date, last.visit, unit = 'days') > theta, 1, 0)]
+  
+  x <- x[, list(date, test, alarm)]
 		
 }  

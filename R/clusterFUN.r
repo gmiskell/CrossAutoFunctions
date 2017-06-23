@@ -35,44 +35,45 @@ clusterFUN <- function(x, date, obs, group, reflective = TRUE, theta = NA, tau =
   
   # define selected variables
   # use data.table package to deal with large datasets
-	x <- as.data.table(x)
-	setDT(x)
-	x$date <- x[,..date]
-	x[, date := ymd_hms(date)]
-	x <- x[date >= date.start & date <= date.end]
-	x$group <- x[,..group]; x$obs <- x[,..obs]
+  x <- as.data.table(x)
+  setDT(x)
+  x$date <- x[,..date]
+  x[, date := ymd_hms(date)]
+  x <- x[date >= date.start & date <= date.end]
+  x$group <- x[,..group]; x$obs <- x[,..obs]
   
   # set up data
-	cast.dat <- x[, list(date, obs, group)]
-	cast.dat <- cast.dat[, dcast(cast.dat, ... ~ group, median, value.var = 'obs')]
-	cast.dat <- setDT(cast.dat)[, day := str_sub(date, end = 10)]
-	clusterA <- cast.dat[, distFUN(.SD), by = .(day)]
-  
-	
-		clusterA <- cast.dat %>%
-			group_by(day, group1) %>%
-			do(distFUN(., d.thresh = theta, plot = FALSE))
+  cast.dat <- x[, list(date, obs, group)]
+  cast.dat <- cast.dat[, dcast(cast.dat, ... ~ group, median, value.var = 'obs')]
+  cast.dat <- setDT(cast.dat)[, day := str_sub(date, end = 10)]
+ 
+  # run cluster function
+  clusterA <- cast.dat %>%
+	group_by(day) %>%
+	filter(length(day) > 2) %>%
+	do(distFUN(., date = 'date'))
 	
   # use theta and tau thresholds if present
-	if((!is.na(theta))) {
+  if((!is.na(theta))) {
   
-		if((!is.na(tau))) {
+	clusterA <- setDT(clusterA)[, warning := ifelse(dissimilarity > theta, 1, 0), by = list(day)]
+	  
+	if((!is.na(tau))) {
 
-			clusterA <- unique(clusterA[, list(day, group)])
-			clusterA <- clusterA[, n := n()]
-			clusterA <- clusterA[, warning := ifelse(n <= theta, 1, 0), by = list(day)][, alarm := movingFun(warning, n = tau, type = 'to', fun = mean, na.rm = T)]
+		clusterA <- clusterA[, alarm := movingFun(warning, n = tau, type = 'to', fun = mean, na.rm = T)]
 				
-		} else {
-			
-			clusterA$warning <- NA
-		}
 	} else {
-		
-		clusterA$warning <- NA; clusterA$alarm <- NA
+			
+		clusterA$warning <- NA
 	}
+  } else {
+		
+	clusterA$warning <- NA; clusterA$alarm <- NA
+
+  }
     
-	#tidy up file
-	clusterA <- clusterA[, list(date, group, obs, proxy, test = 'cluster', warning, alarm)]
-	
-	return(clusterA)
+  # tidy up file and return
+  clusterA <- clusterA[, list(date = as.POSIXct(day), test = 'cluster', site, statistic = dissimilarity, warning, alarm)]
+  return(clusterA)
+
 }

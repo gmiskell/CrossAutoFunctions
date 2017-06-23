@@ -17,11 +17,10 @@ distFUN <- function(x, date) {
   x <- as.data.frame(x)
   
   # find date
-	date <- x[, date]
+  date <- x[, date]
   
   # clauses for where columns are empty, all zeros or same number, etc.
-  row.names <- colnames(x[, -c(1, ncol(x))])
-      
+  row.names <- colnames(x[, -c(1, ncol(x))])     
   xx <- sapply(x[, row.names], var, na.rm = T) == 0
   xx <- which(xx == T)
     
@@ -33,20 +32,15 @@ distFUN <- function(x, date) {
     row <- row.names
   }
     
-	# identify empty observations
-  yy <- colnames(x[, row.names])[colSums(x[, row.names], na.rm = T) == 0]
-    
+  # identify empty observations
+  yy <- colnames(x[, row.names])[colSums(x[, row.names], na.rm = T) == 0]    
   if(length(yy > 0)) {      
     xxx <- xxx[, -which(names(xxx) %in% yy)]
     row <- row.names[! row.names %in% yy]	
   }
-  
-  # if clause on days with less than values 
-
-  
+    
   # apply dissimilarity correlation matrix
-  dist <- as.matrix((1 - cor(xxx[, -c(1, ncol(xxx))], use = 'pairwise.complete.obs', 
-                           method = 'spearman'))/ 2)
+  dist <- as.matrix((1 - cor(xxx[, -c(1, ncol(xxx))], use = 'pairwise.complete.obs', method = 'spearman'))/ 2)
     
   # this is to identify columns which contain NA, etc - need to remove specific moments
   zz <- names(which(colSums(is.na(dist))>0.75*length(rownames(dist))))
@@ -64,6 +58,7 @@ distFUN <- function(x, date) {
   # apply a hierarchical cluster function
   hc <- hclust(as.dist(dist))
   
+  # this finds the dissimilarity score and where an instrument first joins a cluster
   hc.labels <- data.frame(list = 1:length(hc$labels), labels = hc$labels)
   hc.times <- data.frame(order = 1:length(hc$merge[,1]), from = ifelse(hc$merge[,1] < 0, -1*hc$merge[,1], 0), to = ifelse(hc$merge[,2] < 0, -1*hc$merge[,2], 0))
   hc.times <- melt(hc.times, id.vars = 'order')
@@ -80,7 +75,6 @@ distFUN <- function(x, date) {
   hc.sum[hc.sum == -2] <- 2
 
   final.height <- rep(hc$height, hc.sum)
-
   hc.labels.time$height <- final.height
   
   f <- hc.labels.time %>%
