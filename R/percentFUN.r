@@ -28,8 +28,8 @@ percentFUN <- function(x, date, obs, group, reflective = TRUE, date.start = '201
 	date.end = date.end
   } else {
 	
-	date.start = str_c(Sys.Date()-7, ' 00:00:00')
-	date.end = str_c(Sys.Date(), ' 00:00:00')
+    date.start = Sys.time()-60*60*24*7
+    date.end = Sys.time()
   }
   
   date.start <- ymd_hms(date.start); date.end <- ymd_hms(date.end)
@@ -67,7 +67,7 @@ percentFUN <- function(x, date, obs, group, reflective = TRUE, date.start = '201
   
     # if else clause on whether the data are less than theta, becomes 1 if true, and 0 otherwise
     # this looks at running means and is for tau, the length of time for alarms
-		min.max.test <- min.max.test[, warning := ifelse(sigma > theta | sigma < -theta, 1, 0), by = list(group, test)][, alarm := movingFun(warning, n = tau, type = 'to', fun = mean, na.rm = T), by = list(group, test)]
+		min.max.test <- min.max.test[, warning := ifelse(abs(sigma) > theta, 1, 0)][, alarm := movingFun(warning, n = tau, type = 'to', fun = mean, na.rm = T), by = list(group, test)]
 	} else {
 	
 		min.max.test$alarm <- NA

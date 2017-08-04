@@ -27,8 +27,8 @@ clusterFUN <- function(x, date, obs, group, reflective = TRUE, theta = NA, tau =
     date.end = date.end
   } else {
     
-    date.start = str_c(Sys.Date()-7, ' 00:00:00')
-    date.end = str_c(Sys.Date(), ' 00:00:00')
+    date.start = Sys.time()-60*60*24*7
+    date.end = Sys.time()
   }
   
   date.start <- ymd_hms(date.start); date.end <- ymd_hms(date.end)
@@ -50,7 +50,7 @@ clusterFUN <- function(x, date, obs, group, reflective = TRUE, theta = NA, tau =
   # run cluster function
   clusterA <- cast.dat %>%
 	group_by(day) %>%
-	filter(length(day) > 2) %>%
+	filter(length(date) > 2) %>%
 	do(distFUN(., date = 'date'))
 	
   # use theta and tau thresholds if present
