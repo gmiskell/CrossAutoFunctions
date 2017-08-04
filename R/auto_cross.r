@@ -18,7 +18,7 @@ autoFUN <- function(x, date, obs, ell = 3, group = 'site'){
 	library(plyr); library(raster); library(data.table); library(stringr); library(lubridate); library(dplyr)
   
 	x <- as.data.table(x)
-	x$group <- x[, ..group]; x$obs <- x[, ..obs]; x$date <- x[, ..date]
+	x$group <- x[, group]; x$obs <- x[, obs]; x$date <- x[, date]
 	
 	x <- x[, list(date, group, obs)]
 	x <- unique(x)
@@ -69,7 +69,7 @@ crossFUN <- function(x, date, obs, group){
   
 	x <- as.data.table(x)
 	
-	x$group <- x[, ..group]; x$obs <- x[, ..obs]; x$date <- x[, ..date]
+	x$group <- x[, group]; x$obs <- x[, obs]; x$date <- x[, date]
 	
 	x <- x[, list(date, group, obs)][, date := ymd_hms(date)]
 	cast.x <- x[, dcast(x, ... ~ group, median, value.var = 'obs')]
