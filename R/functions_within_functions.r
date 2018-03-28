@@ -131,10 +131,10 @@ networkmedianFUN <- function(x, group, obs){
 nearestsiteFUN <- function(x, obs, group, lat, lon){
 
   # install and load required packages
-  list.of.packages <- c("dplyr");
+  list.of.packages <- c("sp","rgeos","dplyr");
   new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])];
   if(length(new.packages)) install.packages(new.packages);
-  library(dplyr);
+  library(sp);library(rgeos);library(dplyr);
 
   # define variables
   x <- as.data.frame(x);
@@ -146,16 +146,14 @@ nearestsiteFUN <- function(x, obs, group, lat, lon){
     filter(group %in% unique(x$group)) %>%
     select(group, lat, lon);
 	  
-  d <- as.matrix(dist(cbind(x$lon, x$lat)));
-  d <- data.frame(d);
-  colnames(d)<- c(as.character(d$group), 'group');	
-  min.d <- apply(d, 1, function(x) order(x, decreasing = F)[2]);
-  newdata <- cbind(meta2, meta2[min.d,], apply(d, 1, function(x) sort(x, decreasing=F)[2]));
-  colnames(newdata) <- c(colnames(meta2), 'n.group', 'n.lat', 'n.lon', 'distance');
-  newdata <- newdata[,c(1, 5:9)];
+  coordinates(y) <- ~lon+lat;
+  distances <- gDistance(y, byid = T);	
+  min.distance <- apply(distances, 1, function(x) order(x, decreasing = F)[2]);
+  nearest.dist <- cbind(y, y[min.distance,], apply(distances, 1, function(x) sort(x, decreasing=F)[2]));
+  colnames(nearest.dist) <- c(colnames(y), 'n.group', 'n.lat', 'n.lon', 'distance');
 
   # combine the data with appropriate proxy
-  df3 <- join(x, newdata, by = 'group');
+  df3 <- full_join(x, nearest.dist, by = 'group');
   x$nearest.proxy <- x$obs;
   x$obs <- NULL;
 	
