@@ -4,9 +4,8 @@
 \alias{percentFUN}
 \title{A function for comparing the daily minima and maxima.}
 \usage{
-percentFUN(x, date, obs, group, reflective = TRUE,
-  date.start = "2016-07-01 00:00:00", date.end = "2016-07-10 00:00:00",
-  theta = 2, tau = NA)
+percentFUN(x, date, obs, group, by.day = T, reflective = TRUE, theta = 2,
+  tau = NA)
 }
 \arguments{
 \item{date}{This is a required column with the format 'YYYY-MM-DD HH:MM:SS'.}
@@ -15,11 +14,8 @@ percentFUN(x, date, obs, group, reflective = TRUE,
 
 \item{group}{This is the first grouping value of the data, with the default being 'site'.}
 
-\item{reflective}{This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.}
-
-\item{date.start}{This sets the start of the selected data, if reflective is true. Defaults to '2016-07-01 00:00:00'.}
-
-\item{date.end}{This sets the end of the selected data, if reflective is true. Defaults to '2016-07-10 00:00:00'.}
+\item{reflective}{This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.
+#' @param by.day This is an option for where analysis uses data from only that day ('cross', default), or uses all selected data ('auto', FALSE). If selecting auto, the last five days will be used.}
 
 \item{theta}{This sets the test threshold on whether to flag the data. Defaults to 2 (similar to 2 standard deviations).}
 

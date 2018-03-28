@@ -4,10 +4,10 @@
 \alias{distFUN}
 \title{A selection of functions used within other functions in the package}
 \usage{
-distFUN(x, date)
+distFUN(x, omit.cols = NA)
 }
 \arguments{
-\item{date}{Date column}
+\item{omit.cols}{This is a list of the columns to remove from analysis if needed. Default is}
 }
 \description{
 A function for creating dissimilarity plots using Spearman rank correlations.

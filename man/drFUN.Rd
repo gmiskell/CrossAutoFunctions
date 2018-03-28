@@ -4,8 +4,7 @@
 \alias{drFUN}
 \title{A decomposed regression analysis.}
 \usage{
-drFUN(x, obs, date, proxy, reflective = TRUE,
-  date.start = "2016-07-01 00:00:00", date.end = "2016-07-10 00:00:00",
+drFUN(x, obs, date, proxy, reflective = TRUE, reset = 720,
   long.term = 168, short.term = 24, theta = NA, tau = NA)
 }
 \arguments{
@@ -17,9 +16,7 @@ drFUN(x, obs, date, proxy, reflective = TRUE,
 
 \item{reflective}{This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.}
 
-\item{date.start}{This sets the start of the selected data, if reflective is true. Defaults to '2016-07-01 00:00:00'.}
-
-\item{date.end}{This sets the end of the selected data, if reflective is true. Defaults to '2016-07-10 00:00:00'.}
+\item{reset}{This sets the length of time for the long-term trend to reset its coefficients. Defaults to 720.}
 
 \item{long.term}{This sets the length of the long-term trend. Defaults to 168.}
 

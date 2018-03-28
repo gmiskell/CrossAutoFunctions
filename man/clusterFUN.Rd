@@ -4,28 +4,26 @@
 \alias{clusterFUN}
 \title{A daily cluster function.}
 \usage{
-clusterFUN(x, date, obs, group, reflective = TRUE, theta = NA, tau = NA,
-  date.start = "2016-07-01 00:00:00", date.end = "2016-07-10 00:00:00")
+clusterFUN(x, date, obs, group, by.day = TRUE, reflective = TRUE,
+  theta = NA, tau = NA)
 }
 \arguments{
-\item{date}{This the date column (set up as YYYY-MM-DD HH:MM:SS).}
+\item{date}{A date column (set up as `YYYY-MM-DD HH:MM:SS`).}
 
-\item{obs}{This is the column under observation.}
+\item{obs}{The column under observation.}
 
-\item{group}{This is the column where data will be partitioned upon (either site or time).}
+\item{group}{A column which the data are partitioned on (either spatial or temporal).}
 
-\item{reflective}{This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.}
+\item{by.day}{An option where analysis uses data from only that day ("cross", `TRUE`, default), or uses all selected data ("auto", `FALSE`). If selecting auto, the last five days will be used.}
 
-\item{theta}{This sets the test threshold on whether to flag the data. Defaults to NA (no flags given).}
+\item{reflective}{Decides whether to use a selected time period of data (reflective, `TRUE`, default), or to use data from the latest day (live, `FALSE`).}
 
-\item{tau}{This sets the day threshold on whether to flag the data given consistent theta flags. Defaults to NA (no flags given).}
+\item{theta}{Sets the test threshold on whether to flag the data. Defaults to `NA` (no flags given).}
 
-\item{date.start}{This sets the start of the selected data, if reflective is true. Defaults to '2016-07-01 00:00:00'.}
-
-\item{date.end}{This sets the end of the selected data, if reflective is true. Defaults to '2016-07-10 00:00:00'.}
+\item{tau}{Sets the day threshold on whether to flag the data given consistent theta flags. Defaults to `NA` (no flags given).}
 }
 \description{
-This function gives the daily hierarchical cluster for a set of observations.
+A daily cluster function.
 }
 \examples{
 clusterFUN()

@@ -9,7 +9,7 @@
 distFUN <- function(x, omit.cols = NA) {
   
   # install and load required functions  
-  list.of.packages <- c("stats","stringr","lubridate");
+  list.of.packages <- c("stats","tidyverse","lubridate");
   new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])];
   if(length(new.packages)) install.packages(new.packages);
   library(stats);library(stringr);library(lubridate);

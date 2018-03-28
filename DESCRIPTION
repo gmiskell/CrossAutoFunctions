@@ -1,10 +1,9 @@
 Package: CrossAutoFunctions
-Title: Error scanning data using network or historical records
+Title: Error Scanning using Network or Historical Data
 Version: 0.0.0.9000
-Authors@R: person("georgia", "miskell", email = "georgia.miskell@gmail.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-Depends:
-    R (>= 3.3.1)
+Author: Georgia Miskell [aut, cre]
+Description: A group of R functions to assist in running an air quality network. Functions can compare their latest data to either current network results (“cross”) or to previous results from the same site (“auto”). A collection of data-driven tests are used to scan for irregularities that may be related to errors.
+Depends: R (>= 3.3.1)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true

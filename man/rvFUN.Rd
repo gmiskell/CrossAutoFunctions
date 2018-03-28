@@ -4,8 +4,7 @@
 \alias{rvFUN}
 \title{A daily ranked variance function}
 \usage{
-rvFUN(x, obs, date, group, reflective = TRUE,
-  date.start = "2016-07-01 00:00:00", date.end = "2016-07-10 00:00:00",
+rvFUN(x, obs, date, group, ell = 5, reflective = TRUE, by.day = TRUE,
   theta = NA, tau = NA)
 }
 \arguments{
@@ -15,11 +14,9 @@ rvFUN(x, obs, date, group, reflective = TRUE,
 
 \item{group}{This is the first grouping value of the data, with the default being 'site'.}
 
-\item{reflective}{This decides whether to use a selected time period of data (reflective), or to use data from the latest day (live). Defaults to TRUE.}
+\item{reflective}{This decides whether to use all selected data (TRUE), or to use data from the latest day (live). Defaults to TRUE.}
 
-\item{date.start}{This sets the start of the selected data, if reflective is true. Defaults to '2016-07-01 00:00:00'.}
-
-\item{date.end}{This sets the end of the selected data, if reflective is true. Defaults to '2016-07-10 00:00:00'.}
+\item{by.day}{This is an option for where analysis uses data from only that day ('cross', default), or uses all selected data ('auto', FALSE). If selecting auto, the last five days will be used.}
 
 \item{theta}{This sets the test threshold on whether to flag the data. Defaults to NA (no flags given).}
 
