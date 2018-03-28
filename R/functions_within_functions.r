@@ -145,9 +145,10 @@ nearestsiteFUN <- function(x, obs, group, lat, lon){
     meta %>%
     filter(group %in% unique(x$group)) %>%
     select(group, lat, lon);
-	  
-  coordinates(y) <- ~lon+lat;
-  distances <- gDistance(y, byid = T);	
+  
+  sp.y <- y;	
+  coordinates(sp.y) <- ~lon+lat;
+  distances <- gDistance(sp.y, byid = T);	
   min.distance <- apply(distances, 1, function(x) order(x, decreasing = F)[2]);
   nearest.dist <- cbind(y, y[min.distance,], apply(distances, 1, function(x) sort(x, decreasing=F)[2]));
   colnames(nearest.dist) <- c(colnames(y), 'n.group', 'n.lat', 'n.lon', 'distance');
