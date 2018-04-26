@@ -85,37 +85,68 @@ distFUN <- function(x, omit.cols = NA) {
 #'
 #' @param obs This is the column being examined.
 #' @param group This is the identifying variable.
+#' @param id This is an option if some identifying column is required (e.g. by site). Default is NA.
 #' @export
 #' @examples
 #' networkmedianFUN()
 
-networkmedianFUN <- function(x, group, obs){
+networkmedianFUN <- function(x, group, obs, by.row = T, id = NA, statistic = median){
   
-  list.of.packages <- c("stats","dplyr");
+  list.of.packages <- c("stats","dplyr","data.table");
   new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])];
   if(length(new.packages)) install.packages(new.packages);
-  library(stats);library(dplyr);
+  lapply(list.of.packages, library, character.only = T);
 
   # define variables
   x <- as.data.table(x);
   x$obs <- x[, ..obs]; x$group <- x[, ..group];
+  if(!is.na(id)) x$id <- x[, ..id];
   
   # filter data to that of interest
   z = x[, list(group, obs)];
+  if(!is.na(id)) z.id <- x[, list(group, id, obs)];
   
-  if(length(z$obs) > 1){
-    network.proxy <- unlist(sapply(seq(1, nrow(z)), function(i){
-      test = z[-i,]; 
-      z <- median(test$obs, na.rm = T);  
-      return(z);
-  }))
-  } else {
-    network.proxy <- NA;
-    network.proxy <- as.numeric(network.proxy);
-  };
+  net.day.FUN <- function(z){
+    if(length(z$obs) > 1){
+      network.proxy <- unlist(sapply(seq(1, nrow(z)), function(i){
+        test = z[-i,]; 
+        network.proxy <- statistic(test$obs, na.rm = T);
+        return(network.proxy);
+      }))
+      } else {
+        network.proxy <- NA;
+        network.proxy <- as.numeric(network.proxy);
+      }
+    z <- cbind(z, network.proxy);
+    z <- unique(z);
+    };
   
-  z <- cbind(z, network.proxy);
-  z <- unique(z);
+  net.FUN <- function(z){
+    group.list <- as.vector(unique(z$group));
+    output = data.frame(group = as.character(),
+                        network.proxy = as.numeric());
+    for(i in group.list){
+    if(length(z$obs) > 1){
+      selected.group = i;
+      group.stat <- data.frame(group = selected.group, 
+                               network.proxy = statistic(z$obs[z$group != selected.group], na.rm = T));
+      output = rbind(output, group.stat);
+    }
+    }
+    x <- full_join(x, output);
+    x <- unique(x);
+  }
+  
+  if(by.row == T){
+    Z.data <- z[, net.day.FUN(.SD), by = group];
+  }
+  
+  if(by.row == F){
+    Z.data <- net.FUN(z)
+  }
+  
+  if(!is.na(id)) Z.data <- full_join(Z.data, z.id);
+  return(Z.data);
 };
 
 #' This function gives the proxy type of nearest site data.
