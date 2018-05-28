@@ -12,11 +12,7 @@
 
 autoFUN <- function(x, date, obs, ell = 3, sample.unit = 'day', group = 'site'){
   
-	list.of.packages <- c("plyr","raster","stringr","lubridate","dplyr","data.table");
-	new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])];
-	if(length(new.packages)) install.packages(new.packages);
- 
-	library(plyr);library(raster);library(data.table);library(stringr);library(lubridate);library(dplyr);
+library(plyr);library(raster);library(data.table);library(stringr);library(lubridate);library(dplyr);
   
 	x <- as.data.table(x);
 	x$group <- x[, ..group]; x$obs <- x[, ..obs]; x$date <- x[, ..date];

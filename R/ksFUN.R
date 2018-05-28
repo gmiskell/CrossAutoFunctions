@@ -17,11 +17,7 @@
 
 ksFUN <- function(x, obs, date, proxy, reflective = TRUE, theta = NA, tau = NA, window.length = 72){
   
-  # install and load required packages
-    list.of.packages <- c("raster","ggplot2","plyr","data.table","stringr","dplyr");
-    new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])];
-    if(length(new.packages)) install.packages(new.packages); 
-    library(raster);library(ggplot2);library(plyr);library(data.table);library(stringr);library(dplyr);
+library(raster);library(data.table);library(tidyverse);
        
 
   # define selected variables
@@ -44,8 +40,8 @@ ksFUN <- function(x, obs, date, proxy, reflective = TRUE, theta = NA, tau = NA, 
     };
     
     x <- x[date %within% interval(date.start, date.end)];
-    x$proxy <- x[,..proxy];
-    x$obs <- x[,..obs];
+    x$proxy <- x[[proxy]];
+    x$obs <- x[[obs]];
     
   # select the columns for day, groups, daily variance & n of sites
     x <- x[, list(date, obs, proxy)];

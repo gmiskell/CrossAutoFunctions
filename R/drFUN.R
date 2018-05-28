@@ -16,13 +16,8 @@
 
 drFUN <- function(x, obs, date, proxy, reflective = TRUE, reset = 720, long.term = 168, short.term = 24, theta = NA, tau = NA) {
  
-	# install and load required packages
-		list.of.packages <- c("stats","stringr","raster","ggplot2","data.table","dplyr");
-		new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])];
-		if(length(new.packages)) install.packages(new.packages);
-		library(stats); library(stringr); library(raster); library(ggplot2); library(data.table); library(dplyr);
+		library(raster); library(data.table); library(tidyverse);
 		
-
 	# define selected variables
 	# use `data.table` package to deal with large datasets
 		x <- as.data.table(x);
@@ -42,8 +37,8 @@ drFUN <- function(x, obs, date, proxy, reflective = TRUE, reset = 720, long.term
 		};
 		
 		x <- x[date %within% interval(date.start, date.end)];
-		x$proxy <- x[,..proxy];
-		x$obs <- x[,..obs];
+		x$proxy <- x[[proxy]];
+		x$obs <- x[[obs]];
 		x$index <- as.character(rep(seq(1:length(x$obs)), each = reset, length.out = length(x$obs)));
 	
 	# setting up rest of function to work independently over each index (reset)

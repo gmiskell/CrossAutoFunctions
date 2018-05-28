@@ -13,9 +13,6 @@
 
 clusterFUN <- function(x, date, obs, group, by.day = TRUE, reflective = TRUE, theta = NA, tau = NA){
   
-  list.of.packages <- c("raster","tidyverse","lubridate","data.table");
-  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])];
-  if(length(new.packages)) install.packages(new.packages);
   library(raster);library(tidyverse);library(lubridate);library(data.table);
      
   # define selected variables

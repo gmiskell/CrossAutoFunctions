@@ -16,16 +16,13 @@
 
 idcFUN <- function(x, obs = 'obs', date = 'date', group, lat, lon, reflective = TRUE, theta = 0.5, tau = 120, window.size = 72){
   
-  list.of.packages <- c("raster","zoo","tidyverse","lubridate","data.table");
-  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])];
-  if(length(new.packages)) install.packages(new.packages);
-  library(raster);library(zoo);library(tidyverse);library(lubridate);library(data.table);
+library(raster);library(zoo);library(tidyverse);library(lubridate);library(data.table);
   
   # define selected variables
   # use data.table package to deal with large datasets
   x <- as.data.table(x);
   setDT(x);
-  x$date <- x[,..date];
+  x$date <- x[[date]];
   x[, date := ymd_hms(date)];
   
   # clause on type of analysis to be run, define dates
@@ -39,7 +36,7 @@ idcFUN <- function(x, obs = 'obs', date = 'date', group, lat, lon, reflective = 
       };
   
   x <- x[date %within% interval(date.start, date.end)];
-  x$group <- x[,..group]; x$obs <- x[,..obs]; x$lat <- x[,..lat]; x$lon <- x[..lon];
+  x$group <- x[[group]]; x$obs <- x[[obs]]; x$lat <- x[[lat]]; x$lon <- x[[lon]];
   
   spread.x <- x %>%
     dplyr::select(date, group, obs) %>%

@@ -9,13 +9,10 @@
 
 hcFUN <- function(x, obs = 'value', theta = 50){
   
-  list.of.packages <- c("data.table")
-  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-  if(length(new.packages)) install.packages(new.packages)
   library(data.table)
   
   x <- as.data.table(x)
-  x$obs <- x[,..obs]
+  x$obs <- x[[obs]]
   x <- x[, test := 'high concentration'][, alarm := ifelse(obs > theta, 1, 0)]
   
   x <- x[, list(date, test, alarm)]
@@ -32,13 +29,10 @@ hcFUN <- function(x, obs = 'value', theta = 50){
 
 frFUN <- function(x, flow = 'flow', theta = 1.5){
   
-  list.of.packages <- c("data.table")
-  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-  if(length(new.packages)) install.packages(new.packages)
   library(data.table)
   
   x <- as.data.table(x)
-  x$flow <- x[,..flow]
+  x$flow <- x[[flow]]
   x <- x[, alarm := ifelse(flow < theta | is.na(flow), 1, 0)][, test := 'flow']
  
   x <- x[, list(date, test, alarm)]
@@ -56,13 +50,10 @@ frFUN <- function(x, flow = 'flow', theta = 1.5){
 
 vlFUN <- function(x, date, last.visit = 'last.visit', theta = 60){
 
-  list.of.packages <- c("lubridate", "data.table")
-  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-  if(length(new.packages)) install.packages(new.packages)
   library(lubridate); library(dplyr)
 	
   x <- as.data.table(x)
-  x$date <- x[,..date]; x$last.visit <- x[,..last.visit]
+  x$date <- x[[date]]; x$last.visit <- x[[last.visit]]
   x <- x[, test := 'last visit'][, alarm := ifelse(difftime(date, last.visit, unit = 'days') > theta, 1, 0)]
   
   x <- x[, list(date, test, alarm)]

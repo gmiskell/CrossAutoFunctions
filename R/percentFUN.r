@@ -14,17 +14,12 @@
 
 percentFUN <- function(x, date, obs, group, by.day = T, reflective = TRUE, theta = 2, tau = NA){
   
-  # install and load required packages
-  list.of.packages <- c("stats", "stringr","reshape2","ggplot2","data.table","dplyr");
-  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])];
-  if(length(new.packages)) install.packages(new.packages);
-  library(stats);library(stringr);library(reshape2);library(ggplot2);library(data.table);library(dplyr);
-  
+ library(data.table);library(tidyverse);
   
   # define selected variables
   # use `data.table` package to deal with large datasets
   x <- as.data.table(x);
-  x$date <- x[,..date];
+  x$date <- x[[date]];
   x[, date := ymd_hms(date)];
   
   # clause on type of analysis to be run
@@ -39,10 +34,9 @@ percentFUN <- function(x, date, obs, group, by.day = T, reflective = TRUE, theta
     date.start <- ymd_hms(date.start); date.end <- ymd_hms(date.end);
   };
   
-  
   x <- x[date %within% interval(date.start, date.end)];
-  x$group <- x[,..group];
-  x$obs <- x[,..obs];
+  x$group <- x[[group]];
+  x$obs <- x[[obs]];
   
   if(by.day == TRUE){
   # add day column 

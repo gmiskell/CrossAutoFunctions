@@ -8,11 +8,7 @@
 
 distFUN <- function(x, omit.cols = NA) {
   
-  # install and load required functions  
-  list.of.packages <- c("stats","tidyverse","lubridate");
-  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])];
-  if(length(new.packages)) install.packages(new.packages);
-  library(stats);library(stringr);library(lubridate);
+  library(stringr);library(lubridate);
   
   x <- as.data.frame(x);
 
@@ -92,15 +88,12 @@ distFUN <- function(x, omit.cols = NA) {
 
 networkmedianFUN <- function(x, group, obs, by.row = T, id = NA, statistic = median){
   
-  list.of.packages <- c("stats","dplyr","data.table");
-  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])];
-  if(length(new.packages)) install.packages(new.packages);
-  lapply(list.of.packages, library, character.only = T);
+  library(data.table); library(dplyr);
 
   # define variables
   x <- as.data.table(x);
-  x$obs <- x[, ..obs]; x$group <- x[, ..group];
-  if(!is.na(id)) x$id <- x[, ..id];
+  x$obs <- x[[obs]]; x$group <- x[[group]];
+  if(!is.na(id)) x$id <- x[[id]];
   
   # filter data to that of interest
   z = x[, list(group, obs)];
@@ -161,10 +154,6 @@ networkmedianFUN <- function(x, group, obs, by.row = T, id = NA, statistic = med
   
 nearestsiteFUN <- function(x, obs, group, lat, lon){
 
-  # install and load required packages
-  list.of.packages <- c("sp","rgeos","dplyr");
-  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])];
-  if(length(new.packages)) install.packages(new.packages);
   library(sp);library(rgeos);library(dplyr);
 
   # define variables
@@ -207,9 +196,6 @@ nearestsiteFUN <- function(x, obs, group, lat, lon){
 
 rollingKStest <- function(z, obs, proxy, window = 1440){
   
-  list.of.packages <- c("zoo","dplyr");
-  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])];
-  if(length(new.packages)) install.packages(new.packages);
   library(zoo);library(dplyr);
 
   # define variables

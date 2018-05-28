@@ -14,11 +14,7 @@
 
 rvFUN <- function(x, obs, date, group, ell = 5, reflective = TRUE, by.day = TRUE, theta = NA, tau = NA) {
   
-  # install and load required packages
-    list.of.packages <- c("stats", "stringr","zoo","raster", "ggplot2", "data.table", "dplyr");
-    new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])];
-    if(length(new.packages)) install.packages(new.packages);
-    library(stats);library(zoo);library(stringr);library(raster);library(ggplot2);library(data.table);library(dplyr);
+library(zoo);library(data.table);library(tidyverse);
     
     # define selected variables
     # use `data.table` package to deal with large datasets
@@ -39,8 +35,8 @@ rvFUN <- function(x, obs, date, group, ell = 5, reflective = TRUE, by.day = TRUE
     };
     
     x <- x[date %within% interval(date.start, date.end)];
-    x$group <- x[,..group];
-    x$obs <- x[,..obs];
+    x$group <- x[[group]];
+    x$obs <- x[[obs]];
 	
   if(by.day == TRUE){
     
