@@ -31,8 +31,8 @@ drFUN <- function(x, obs, date, proxy, reflective = TRUE, reset = 720, long.term
 		  
 		} else {
 		  
-		  date.start = Sys.time()-60*60*24*7;
-		  date.end = Sys.time();
+		  date.start = now()-60*60*24*7;
+		  date.end = now();
 		  date.start = ymd_hms(date.start); date.end <- ymd_hms(date.end);
 		};
 		

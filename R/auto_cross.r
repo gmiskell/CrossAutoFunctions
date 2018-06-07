@@ -15,7 +15,7 @@ autoFUN <- function(x, date, obs, ell = 3, sample.unit = 'day', group = 'site'){
 library(plyr);library(raster);library(data.table);library(stringr);library(lubridate);library(dplyr);
   
 	x <- as.data.table(x);
-	x$group <- x[, ..group]; x$obs <- x[, ..obs]; x$date <- x[, ..date];
+	x$group <- x[[group]]; x$obs <- x[[obs]]; x$date <- x[[date]];
 	
 	x <- x[, list(date, group, obs)];
 	x <- unique(x);
@@ -67,15 +67,11 @@ library(plyr);library(raster);library(data.table);library(stringr);library(lubri
 
 crossFUN <- function(x, date, obs, group){
   
-	list.of.packages <- c("reshape2","lubridate","data.table");
-	new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])];
-	if(length(new.packages)) install.packages(new.packages);
- 
 	library(reshape2);library(lubridate);library(data.table);
   
 	x <- as.data.table(x);
 	
-	x$group <- x[, ..group]; x$obs <- x[, ..obs]; x$date <- x[, ..date];
+	x$group <- x[[group]]; x$obs <- x[[obs]]; x$date <- x[[date]];
 	x$group <- as.character(x$group); x$site <- as.character(x$site);
 	
 	x <- x[, list(date, group, obs)][, date := ymd_hms(date)];

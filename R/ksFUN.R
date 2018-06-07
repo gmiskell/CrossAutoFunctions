@@ -33,8 +33,8 @@ library(raster);library(data.table);library(tidyverse);
       
     } else {
       
-      date.start = Sys.time()-60*60*24*7;
-      date.end = Sys.time();
+      date.start = now()-60*60*24*7;
+      date.end = now();
       date.start <- ymd_hms(date.start); date.end <- ymd_hms(date.end);
       
     };

@@ -29,8 +29,8 @@ percentFUN <- function(x, date, obs, group, by.day = T, reflective = TRUE, theta
 	date.end = max(x$date, na.rm = T);
   } else {
 	
-    date.start = Sys.time()-60*60*24*7;
-    date.end = Sys.time();
+    date.start = now()-60*60*24*7;
+    date.end = now();
     date.start <- ymd_hms(date.start); date.end <- ymd_hms(date.end);
   };
   

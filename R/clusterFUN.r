@@ -19,7 +19,7 @@ clusterFUN <- function(x, date, obs, group, by.day = TRUE, reflective = TRUE, th
   # use data.table package to deal with large datasets
   x <- as.data.table(x);
   setDT(x);
-  x$date <- x[,..date];
+  x$date <- x[[date]];
   x[, date := ymd_hms(date)];
   
   # clause on type of analysis to be run, define dates
@@ -27,13 +27,13 @@ clusterFUN <- function(x, date, obs, group, by.day = TRUE, reflective = TRUE, th
     date.start = min(x$date, na.rm = T); 
     date.end = max(x$date, na.rm = T);
   } else {  
-    date.start = Sys.time()-60*60*24*7;
-    date.end = Sys.time();
+    date.start = now()-60*60*24*7;
+    date.end = now();
     date.start <- ymd_hms(date.start); date.end <- ymd_hms(date.end);
   };
   
   x <- x[date %within% interval(date.start, date.end)];
-  x$group <- x[,..group]; x$obs <- x[,..obs];
+  x$group <- x[[group]]; x$obs <- x[[obs]];
   
   if(by.day == TRUE){
     # set up data

@@ -200,7 +200,7 @@ rollingKStest <- function(z, obs, proxy, window = 1440){
 
   # define variables
   z <- as.data.frame(z);
-  z$obs <- z[, obs]; z$proxy <- z[, proxy];
+  z$obs <- z[[obs]]; z$proxy <- z[[proxy]];
   
   if(length(z$obs) > window){
     
@@ -208,7 +208,7 @@ rollingKStest <- function(z, obs, proxy, window = 1440){
       dplyr::arrange(date);
     
     # save date column
-    date <- z[, 'date'];
+    date <- z[[date]];
     
     # turn data into data frame
     y <- data.frame(z[, obs], z[,proxy]);
@@ -258,7 +258,7 @@ ks.dev.s <- function(x, y){
     model <- cbind(date, model);
   
     # join ks results to the data and return
-    z <- join(z, model, by = 'date');
+    z <- full_join(z, model, by = 'date');
     } else {	
 	
 	z$p.value <- NA;
