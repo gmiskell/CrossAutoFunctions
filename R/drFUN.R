@@ -16,7 +16,7 @@
 
 drFUN <- function(x, obs, date, proxy, reflective = TRUE, reset = 720, long.term = 168, short.term = 24, theta = NA, tau = NA) {
  
-		library(raster); library(data.table); library(tidyverse);
+		library(raster); library(data.table); library(lubridate); library(tidyverse);
 		
 	# define selected variables
 	# use `data.table` package to deal with large datasets
